@@ -1,4 +1,16 @@
+#!/usr/bin/env python3
 
+import os
+
+def update_file(file_path, content):
+    print(f"Updating {file_path}...")
+    with open(file_path, "w") as f:
+        f.write(content)
+    print(f"{file_path} updated successfully.")
+
+def main():
+    # Update src/app/page.tsx
+    page_tsx = """
 'use client'
 
 import { useState } from 'react';
@@ -41,7 +53,7 @@ export default function Home() {
         <meta property="og:title" content="DMARC Checker - Verify Your Domain's Email Security" />
         <meta property="og:description" content="Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://dmarc.makr.io" />
+        <meta property="og:url" content="https://yourwebsite.com" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="DMARC Checker - Verify Your Domain's Email Security" />
         <meta name="twitter:description" content="Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability." />
@@ -143,3 +155,106 @@ const RecordStatus = ({ name, status, record }: { name: string; status: string; 
     </div>
   );
 };
+"""
+    update_file("src/app/page.tsx", page_tsx)
+
+    # Update src/app/api/check-domain/route.ts
+    api_check_domain_ts = """
+import { NextResponse } from 'next/server'
+import dns from 'dns'
+import { promisify } from 'util'
+
+const resolveTxt = promisify(dns.resolveTxt)
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const domain = searchParams.get('domain')
+
+  if (!domain) {
+    return NextResponse.json({ error: 'Domain is required' }, { status: 400 })
+  }
+
+  try {
+    const [dmarcResult, spfResult, dkimResult] = await Promise.all([
+      checkDMARC(domain),
+      checkSPF(domain),
+      checkDKIM(domain),
+    ])
+
+    return NextResponse.json({
+      dmarc: dmarcResult.status,
+      dmarcRecord: dmarcResult.record,
+      spf: spfResult.status,
+      spfRecord: spfResult.record,
+      dkim: dkimResult.status,
+      dkimRecord: dkimResult.record,
+    })
+  } catch (error) {
+    return NextResponse.json({ error: 'Error checking domain records' }, { status: 500 })
+  }
+}
+
+async function checkDMARC(domain: string): Promise<{ status: string; record: string }> {
+  try {
+    const records = await resolveTxt(`_dmarc.${domain}`)
+    const dmarcRecord = records.find(record => record[0].startsWith('v=DMARC1'))
+    if (dmarcRecord) {
+      return { status: 'valid', record: dmarcRecord[0] }
+    } else {
+      return { status: 'invalid', record: 'No valid DMARC record found' }
+    }
+  } catch (error) {
+    return { status: 'not found', record: 'No DMARC record found' }
+  }
+}
+
+async function checkSPF(domain: string): Promise<{ status: string; record: string }> {
+  try {
+    const records = await resolveTxt(domain)
+    const spfRecord = records.find(record => record[0].startsWith('v=spf1'))
+    if (spfRecord) {
+      return { status: 'valid', record: spfRecord[0] }
+    } else {
+      return { status: 'invalid', record: 'No valid SPF record found' }
+    }
+  } catch (error) {
+    return { status: 'not found', record: 'No SPF record found' }
+  }
+}
+
+async function checkDKIM(domain: string): Promise<{ status: string; record: string }> {
+  // Note: DKIM is more complex to check without knowing the selector
+  // This is a simplified check that looks for a default selector
+  try {
+    const records = await resolveTxt(`default._domainkey.${domain}`)
+    const dkimRecord = records.find(record => record[0].startsWith('v=DKIM1'))
+    if (dkimRecord) {
+      return { status: 'valid', record: dkimRecord[0] }
+    } else {
+      return { status: 'invalid', record: 'No valid DKIM record found for default selector' }
+    }
+  } catch (error) {
+    return { status: 'not found', record: 'No DKIM record found for default selector' }
+  }
+}
+"""
+    update_file("src/app/api/check-domain/route.ts", api_check_domain_ts)
+
+    # Create favicon.svg
+    favicon_svg = """
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+  <path d="M12 8v4"/>
+  <path d="M12 16h.01"/>
+</svg>
+"""
+    update_file("public/favicon.svg", favicon_svg)
+
+    print("\nAll files have been updated successfully!")
+    print("\nNext steps:")
+    print("1. Review the changes in the updated files")
+    print("2. Run 'npm run dev' to start the development server and test the changes")
+    print("3. If everything looks good, commit the changes to your git repository")
+
+if __name__ == "__main__":
+    main()

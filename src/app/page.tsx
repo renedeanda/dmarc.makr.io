@@ -1,9 +1,7 @@
-
 'use client'
 
 import { useState } from 'react';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import Head from 'next/head';
 
 export default function Home() {
   const [domain, setDomain] = useState('');
@@ -33,21 +31,15 @@ export default function Home() {
   };
 
   return (
-    <>
-      <Head>
-        <title>DMARC Checker - Verify Your Domain's Email Security</title>
-        <meta name="description" content="Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability." />
-        <meta name="keywords" content="DMARC, SPF, DKIM, email security, domain checker" />
-        <meta property="og:title" content="DMARC Checker - Verify Your Domain's Email Security" />
-        <meta property="og:description" content="Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://dmarc.makr.io" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="DMARC Checker - Verify Your Domain's Email Security" />
-        <meta name="twitter:description" content="Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability." />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      </Head>
-      <main className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+    <main className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Rede.io Promotion Banner */}
+      <div className="bg-amber-500 text-white py-2 text-center">
+        <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
+          Check out Rede.io for your daily tech newsletter! 📚
+        </a>
+      </div>
+
+      <div className="flex-grow py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
@@ -91,11 +83,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <footer className="mt-8 text-center text-gray-500 text-sm">
-          Provided for free by the makers of <a href="https://rede.io" className="text-amber-500 hover:underline">Rede.io</a>, your daily tech newsletter
-        </footer>
-      </main>
-    </>
+      </div>
+      <footer className="text-center text-gray-500 text-sm py-4">
+        Provided for free by the makers of <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede.io</a>, your daily tech newsletter
+      </footer>
+    </main>
   );
 }
 

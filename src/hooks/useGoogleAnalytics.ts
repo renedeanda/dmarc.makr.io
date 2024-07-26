@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -12,7 +12,6 @@ declare global {
 
 export default function useGoogleAnalytics() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (pathname) {
@@ -20,7 +19,7 @@ export default function useGoogleAnalytics() {
         page_path: pathname,
       });
     }
-  }, [pathname, searchParams]);
+  }, [pathname]);
 }
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events

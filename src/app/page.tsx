@@ -1,7 +1,9 @@
+
 'use client'
 
 import { useState } from 'react';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import DmarcTagExplanation from './DmarcTagExplanation';
 
 export default function Home() {
   const [domain, setDomain] = useState('');
@@ -35,7 +37,7 @@ export default function Home() {
       {/* Rede.io Promotion Banner */}
       <div className="bg-amber-500 text-white py-2 text-center">
         <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
-          Check out Rede.io for your daily tech newsletter! 📚
+          Check out 📚 Rede.io for your daily tech newsletter!
         </a>
       </div>
 
@@ -75,8 +77,9 @@ export default function Home() {
                     <div className="space-y-4">
                       <RecordStatus name="DMARC" status={results.dmarc} record={results.dmarcRecord} />
                       <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
-                      <RecordStatus name="DKIM" status={results.dkim} record={results.dkimRecord} />
+                      <DkimStatus dkimResults={results.dkimResults} />
                     </div>
+                    <SubdomainInheritance />
                   </div>
                 )}
               </div>
@@ -84,6 +87,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <DmarcTagExplanation />
       <footer className="text-center text-gray-500 text-sm py-4">
         © 2024 Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
       </footer>
@@ -132,6 +136,45 @@ const RecordStatus = ({ name, status, record }: { name: string; status: string; 
           <p>{getRemediation()}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+const DkimStatus = ({ dkimResults }: { dkimResults: { selector: string; status: string }[] }) => {
+  return (
+    <div className="bg-gray-50 rounded-lg p-4 shadow">
+      <div className="flex items-center space-x-2 mb-2">
+        <span className="font-semibold">DKIM:</span>
+      </div>
+      {dkimResults.length > 0 ? (
+        <div>
+          <h4 className="font-semibold">Found DKIM Selectors:</h4>
+          <ul className="list-disc list-inside">
+            {dkimResults.map((result, index) => (
+              <li key={index}>
+                Selector: {result.selector} - Status: {result.status}
+                {result.status === 'valid' && <CheckCircle className="inline-block ml-2 text-green-500" />}
+                {result.status === 'invalid' && <XCircle className="inline-block ml-2 text-red-500" />}
+                {result.status === 'not found' && <AlertCircle className="inline-block ml-2 text-yellow-500" />}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No DKIM selectors found. Consider setting up DKIM for improved email authentication.</p>
+      )}
+    </div>
+  );
+};
+
+const SubdomainInheritance = () => {
+  return (
+    <div className="mt-6 bg-gray-50 rounded-lg p-4 shadow">
+      <h3 className="text-lg font-semibold mb-2">Subdomain Inheritance</h3>
+      <p>
+        Subdomains can inherit their DMARC configuration from the parent domain, depending on the values in the parent domain's DMARC record.
+        The 'sp' tag in the parent domain's DMARC record specifies the policy for subdomains. If not present, subdomains inherit the policy specified by the 'p' tag.
+      </p>
     </div>
   );
 };

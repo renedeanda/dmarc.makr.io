@@ -85,7 +85,7 @@ export default function Home() {
         </div>
       </div>
       <footer className="text-center text-gray-500 text-sm py-4">
-        Provided for free by the makers of <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede.io</a>, your daily tech newsletter
+        © 2024 Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
       </footer>
     </main>
   );

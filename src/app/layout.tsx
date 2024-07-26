@@ -11,7 +11,7 @@ export const metadata = {
     title: "DMARC Checker - Verify Your Domain's Email Security",
     description: "Free DMARC checker tool. Verify your domain's DMARC, SPF, and DKIM records to improve email security and deliverability.",
     type: 'website',
-    url: 'https://yourwebsite.com',
+    url: 'https://dmarc.makr.io',
   },
   twitter: {
     card: 'summary_large_image',

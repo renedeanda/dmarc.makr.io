@@ -110,7 +110,7 @@ export default function Home() {
         </div>
         <DmarcTagExplanation />
         <footer className="text-center text-gray-500 text-sm py-4">
-          © 2024 Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
+          &copy; {new Date().getFullYear()} Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
         </footer>
       </main>
     </>

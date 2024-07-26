@@ -18,24 +18,14 @@ const dmarcTags = [
 const DmarcTagExplanation: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">DMARC Tag Explanations</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-2 text-left">Tag</th>
-              <th className="px-4 py-2 text-left">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dmarcTags.map((tag, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="border px-4 py-2 font-semibold">{tag.tag}</td>
-                <td className="border px-4 py-2">{tag.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h2 className="text-2xl font-semibold text-amber-500 mb-6">DMARC Tag Explanations</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {dmarcTags.map((tag, index) => (
+          <div key={index} className="bg-gray-50 rounded-lg p-4 shadow transition-all duration-300 hover:shadow-md hover:bg-gray-100">
+            <span className="font-bold text-amber-600">{tag.tag}</span>
+            <p className="text-gray-700 mt-1">{tag.description}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

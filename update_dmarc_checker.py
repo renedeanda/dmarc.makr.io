@@ -14,9 +14,11 @@ def main():
     page_tsx = """
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import DmarcTagExplanation from './DmarcTagExplanation';
+import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
+import Script from 'next/script';
 
 export default function Home() {
   const [domain, setDomain] = useState('');
@@ -25,6 +27,9 @@ export default function Home() {
   const [error, setError] = useState('');
   const [checkedDomain, setCheckedDomain] = useState('');
 
+  // Initialize Google Analytics
+  useGoogleAnalytics();
+
   const checkDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -32,12 +37,15 @@ export default function Home() {
     setResults(null);
     setCheckedDomain('');
 
+    // Trim protocol prefixes from the domain
+    const trimmedDomain = domain.replace(/^(https?:\/\/)?(www\.)?/i, '').split('/')[0];
+
     try {
-      const response = await fetch(`/api/check-domain?domain=${encodeURIComponent(domain)}`);
+      const response = await fetch(`/api/check-domain?domain=${encodeURIComponent(trimmedDomain)}`);
       if (!response.ok) throw new Error('Failed to check domain');
       const data = await response.json();
       setResults(data);
-      setCheckedDomain(domain);
+      setCheckedDomain(trimmedDomain);
     } catch (err) {
       setError('An error occurred while checking the domain. Please try again.');
     } finally {
@@ -46,68 +54,79 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Rede.io Promotion Banner */}
-      <div className="bg-amber-500 text-white py-2 text-center">
-        <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
-          Check out Rede.io for your daily tech newsletter! 🚀
-        </a>
-      </div>
+    <>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+        `}
+      </Script>
+      <main className="min-h-screen bg-gray-100 flex flex-col">
+        {/* Rede.io Promotion Banner */}
+        <div className="bg-amber-500 text-white py-2 text-center">
+          <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
+            Check out 📚 Rede.io for your daily tech newsletter!
+          </a>
+        </div>
 
-      <div className="flex-grow py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div className="max-w-md mx-auto">
-              <div>
-                <h1 className="text-2xl font-semibold font-iowan-old-style text-amber-500">DMARC Domain Checker</h1>
-                <p className="mt-2 text-gray-600">Check your domain's email security setup</p>
-              </div>
-              <div className="divide-y divide-gray-200">
-                <form onSubmit={checkDomain} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="Enter domain"
-                      value={domain}
-                      onChange={(e) => setDomain(e.target.value)}
-                      required
-                    />
-                    <label className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Enter domain</label>
-                  </div>
-                  <div className="relative">
-                    <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50">
-                      {loading ? 'Checking...' : 'Check Domain'}
-                    </button>
-                  </div>
-                </form>
-                {loading && <p className="text-center">Checking domain...</p>}
-                {error && <p className="text-red-500 bg-red-100 border border-red-400 rounded p-3">{error}</p>}
-                {results && (
-                  <div className="py-8">
-                    <h2 className="text-xl font-semibold mb-4">Results for {checkedDomain}</h2>
-                    <div className="space-y-4">
-                      <RecordStatus name="DMARC" status={results.dmarc} record={results.dmarcRecord} />
-                      <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
-                      <DkimStatus dkimResults={results.dkimResults} />
+        <div className="flex-grow py-6 flex flex-col justify-center sm:py-12">
+          <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+            <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+              <div className="max-w-md mx-auto">
+                <div>
+                  <h1 className="text-2xl font-semibold font-iowan-old-style text-amber-500">DMARC Domain Checker</h1>
+                  <p className="mt-2 text-gray-600">Check your domain's email security setup</p>
+                </div>
+                <div className="divide-y divide-gray-200">
+                  <form onSubmit={checkDomain} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-amber-500 transition-colors"
+                        placeholder="Enter domain"
+                        value={domain}
+                        onChange={(e) => setDomain(e.target.value)}
+                        required
+                      />
+                      <label className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Enter domain</label>
                     </div>
-                    {results.dmarcRecord && (
-                      <DmarcRecordBreakdown record={results.dmarcRecord} />
-                    )}
-                    <SubdomainInheritance />
-                  </div>
-                )}
+                    <div className="relative">
+                      <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50">
+                        {loading ? 'Checking...' : 'Check Domain'}
+                      </button>
+                    </div>
+                  </form>
+                  {loading && <p className="text-center">Checking domain...</p>}
+                  {error && <p className="text-red-500 bg-red-100 border border-red-400 rounded p-3">{error}</p>}
+                  {results && (
+                    <div className="py-8">
+                      <h2 className="text-xl font-semibold mb-4">Results for {checkedDomain}</h2>
+                      <div className="space-y-4">
+                        <RecordStatus name="DMARC" status={results.dmarc} record={results.dmarcRecord} />
+                        <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
+                        <DkimStatus dkimResults={results.dkimResults} />
+                      </div>
+                      <SubdomainInheritance />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <DmarcTagExplanation />
-      <footer className="text-center text-gray-500 text-sm py-4">
-        Provided for free by the makers of <a href="https://rede.io" className="text-amber-500 hover:underline">Rede.io</a>, your daily tech newsletter
-      </footer>
-    </main>
+        <DmarcTagExplanation />
+        <footer className="text-center text-gray-500 text-sm py-4">
+          © 2024 Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
+        </footer>
+      </main>
+    </>
   );
 }
 
@@ -183,25 +202,6 @@ const DkimStatus = ({ dkimResults }: { dkimResults: { selector: string; status: 
   );
 };
 
-const DmarcRecordBreakdown = ({ record }: { record: string }) => {
-  const tags = record.split(';').map(tag => tag.trim());
-  return (
-    <div className="mt-6 bg-gray-50 rounded-lg p-4 shadow">
-      <h3 className="text-lg font-semibold mb-2">DMARC Record Breakdown</h3>
-      <ul className="list-disc list-inside">
-        {tags.map((tag, index) => {
-          const [key, value] = tag.split('=');
-          return (
-            <li key={index}>
-              <span className="font-semibold">{key}:</span> {value}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
-
 const SubdomainInheritance = () => {
   return (
     <div className="mt-6 bg-gray-50 rounded-lg p-4 shadow">
@@ -216,7 +216,7 @@ const SubdomainInheritance = () => {
 """
     update_file("src/app/page.tsx", page_tsx)
 
-    # Create src/app/DmarcTagExplanation.tsx
+    # Update src/app/DmarcTagExplanation.tsx
     dmarc_tag_explanation_tsx = """
 import React from 'react';
 
@@ -237,24 +237,14 @@ const dmarcTags = [
 const DmarcTagExplanation: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">DMARC Tag Explanations</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-2 text-left">Tag</th>
-              <th className="px-4 py-2 text-left">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dmarcTags.map((tag, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="border px-4 py-2 font-semibold">{tag.tag}</td>
-                <td className="border px-4 py-2">{tag.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h2 className="text-2xl font-semibold text-amber-500 mb-6">DMARC Tag Explanations</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {dmarcTags.map((tag, index) => (
+          <div key={index} className="bg-gray-50 rounded-lg p-4 shadow transition-all duration-300 hover:shadow-md hover:bg-gray-100">
+            <span className="font-bold text-amber-600">{tag.tag}</span>
+            <p className="text-gray-700 mt-1">{tag.description}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -263,85 +253,54 @@ const DmarcTagExplanation: React.FC = () => {
 export default DmarcTagExplanation;
 """
     update_file("src/app/DmarcTagExplanation.tsx", dmarc_tag_explanation_tsx)
+# Create src/hooks/useGoogleAnalytics.ts
+    use_google_analytics_ts = """
+import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-    # Update src/app/api/check-domain/route.ts
-    check_domain_route_ts = """
-import { NextResponse } from 'next/server';
-import dns from 'dns';
-import { promisify } from 'util';
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-const resolveTxt = promisify(dns.resolveTxt);
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const domain = searchParams.get('domain');
-
-  if (!domain) {
-    return NextResponse.json({ error: 'Domain is required' }, { status: 400 });
-  }
-
-  try {
-    const [dmarcRecord, spfRecord] = await Promise.all([
-      getDmarcRecord(domain),
-      getSpfRecord(domain),
-    ]);
-
-    const dkimResults = await checkDkimSelectors(domain);
-
-    return NextResponse.json({
-      dmarc: dmarcRecord ? 'valid' : 'not found',
-      dmarcRecord,
-      spf: spfRecord ? 'valid' : 'not found',
-      spfRecord,
-      dkimResults,
-    });
-  } catch (error) {
-    console.error('Error checking domain:', error);
-    return NextResponse.json({ error: 'Failed to check domain' }, { status: 500 });
+declare global {
+  interface Window {
+    gtag: (option: string, gaTrackingId: string, options: Record<string, unknown>) => void;
   }
 }
 
-async function getDmarcRecord(domain: string): Promise<string | null> {
-  try {
-    const records = await resolveTxt(`_dmarc.${domain}`);
-    return records[0].join('');
-  } catch (error) {
-    return null;
-  }
+export default function useGoogleAnalytics() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (pathname) {
+      window.gtag('config', GA_TRACKING_ID!, {
+        page_path: pathname,
+      });
+    }
+  }, [pathname, searchParams]);
 }
 
-async function getSpfRecord(domain: string): Promise<string | null> {
-  try {
-    const records = await resolveTxt(domain);
-    const spfRecord = records.find(record => record[0].startsWith('v=spf1'));
-    return spfRecord ? spfRecord.join('') : null;
-  } catch (error) {
-    return null;
-  }
-}
-
-async function checkDkimSelectors(domain: string): Promise<{ selector: string; status: string }[]> {
-  const commonSelectors = ['default', 'google', 'selector1', 'selector2', 'k1', 'dkim'];
-  const results = await Promise.all(
-    commonSelectors.map(async (selector) => {
-      try {
-        const records = await resolveTxt(`${selector}._domainkey.${domain}`);
-        return { selector, status: 'valid' };
-      } catch (error) {
-        return { selector, status: 'not found' };
-      }
-    })
-  );
-  return results.filter(result => result.status === 'valid');
-}
+// https://developers.google.com/analytics/devguides/collection/gtagjs/events
+export const event = ({ action, category, label, value }: {
+  action: string;
+  category: string;
+  label: string;
+  value: number;
+}) => {
+  window.gtag('event', action, {
+    event_category: category,
+    event_label: label,
+    value: value,
+  });
+};
 """
-    update_file("src/app/api/check-domain/route.ts", check_domain_route_ts)
+    update_file("src/hooks/useGoogleAnalytics.ts", use_google_analytics_ts)
 
     print("\nAll files have been updated successfully!")
     print("\nNext steps:")
     print("1. Review the changes in the updated files")
-    print("2. Run 'npm run dev' to start the development server and test the changes")
-    print("3. If everything looks good, commit the changes to your git repository")
+    print("2. Add your Google Analytics ID to your .env.local file as NEXT_PUBLIC_GA_ID")
+    print("3. Run 'npm run dev' to start the development server and test the changes")
+    print("4. If everything looks good, commit the changes to your git repository")
 
 if __name__ == "__main__":
     main()

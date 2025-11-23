@@ -30,9 +30,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
 
     // DMARC analysis
     if (results.dmarc === 'not found') {
-      issues.push('❌ DMARC: Not configured (High Risk)');
+      issues.push('[X] DMARC: Not configured (High Risk)');
       recommendations.push(`
-📧 DMARC Not Found - HIGH PRIORITY
+[EMAIL] DMARC Not Found - HIGH PRIORITY
    Problem: Your domain has no DMARC policy, making it vulnerable to email
    spoofing and phishing attacks.
 
@@ -48,9 +48,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
    Learn more: https://dmarc.makr.io/guide/setup-dmarc`);
       priorityActions.push('Set up DMARC record (Start with p=none for monitoring)');
     } else if (results.dmarc === 'invalid') {
-      issues.push('⚠️  DMARC: Invalid configuration');
+      issues.push('[!] DMARC: Invalid configuration');
       recommendations.push(`
-⚠️  DMARC Invalid Configuration
+[!] DMARC Invalid Configuration
    Problem: Your DMARC record exists but has syntax errors or invalid values.
 
    Current Record: ${results.dmarcRecord || 'Unable to retrieve'}
@@ -64,11 +64,11 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
    Troubleshooting: https://dmarc.makr.io/issues`);
       priorityActions.push('Fix DMARC syntax errors');
     } else {
-      issues.push('✅ DMARC: Properly configured');
+      issues.push('[OK] DMARC: Properly configured');
       // Check policy strength
       if (results.dmarcRecord?.includes('p=none')) {
         recommendations.push(`
-📊 DMARC in Monitoring Mode
+[INFO] DMARC in Monitoring Mode
    Status: Your DMARC policy is set to "none" (monitoring only).
 
    Current Record: ${results.dmarcRecord}
@@ -85,9 +85,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
 
     // SPF analysis
     if (results.spf === 'not found') {
-      issues.push('❌ SPF: Not configured (High Risk)');
+      issues.push('[X] SPF: Not configured (High Risk)');
       recommendations.push(`
-📧 SPF Not Found - HIGH PRIORITY
+[EMAIL] SPF Not Found - HIGH PRIORITY
    Problem: Your domain has no SPF record, allowing anyone to send email
    claiming to be from your domain.
 
@@ -109,9 +109,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
    Learn more: https://dmarc.makr.io/guide`);
       priorityActions.push('Create SPF record with authorized mail servers');
     } else if (results.spf === 'invalid') {
-      issues.push('⚠️  SPF: Invalid configuration');
+      issues.push('[!] SPF: Invalid configuration');
       recommendations.push(`
-⚠️  SPF Invalid Configuration
+[!] SPF Invalid Configuration
    Problem: Your SPF record has errors that prevent proper validation.
 
    Current Record: ${results.spfRecord || 'Unable to retrieve'}
@@ -131,11 +131,11 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
    Troubleshooting: https://dmarc.makr.io/issues`);
       priorityActions.push('Fix SPF record errors');
     } else {
-      issues.push('✅ SPF: Properly configured');
+      issues.push('[OK] SPF: Properly configured');
       // Check for best practices
       if (results.spfRecord?.includes('~all')) {
         recommendations.push(`
-📊 SPF Uses Soft Fail
+[INFO] SPF Uses Soft Fail
    Status: Your SPF record ends with ~all (soft fail).
 
    Current Record: ${results.spfRecord}
@@ -152,9 +152,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
     // DKIM analysis
     const dkimValid = results.dkimResults?.some((d: any) => d.status === 'valid');
     if (!dkimValid && results.dkimResults?.length === 0) {
-      issues.push('❌ DKIM: Not configured (Medium Risk)');
+      issues.push('[X] DKIM: Not configured (Medium Risk)');
       recommendations.push(`
-🔐 DKIM Not Found - MEDIUM PRIORITY
+[SECURITY] DKIM Not Found - MEDIUM PRIORITY
    Problem: Your domain has no DKIM signatures, reducing email trustworthiness.
 
    Impact: Your emails lack cryptographic verification. Some receivers may treat
@@ -175,9 +175,9 @@ export default function ShareResults({ domain, results, score }: ShareResultsPro
    Learn more: https://dmarc.makr.io/guide`);
       priorityActions.push('Set up DKIM signing with your email provider');
     } else if (!dkimValid && results.dkimResults?.length > 0) {
-      issues.push('⚠️  DKIM: Configured but failing validation');
+      issues.push('[!] DKIM: Configured but failing validation');
       recommendations.push(`
-⚠️  DKIM Validation Failing
+[!] DKIM Validation Failing
    Problem: DKIM selectors found but not validating correctly.
 
    Selectors checked:
@@ -198,7 +198,7 @@ ${results.dkimResults?.map((d: any) => `   - ${d.selector}: ${d.status}`).join('
    Troubleshooting: https://dmarc.makr.io/issues`);
       priorityActions.push('Verify DKIM keys are properly published in DNS');
     } else {
-      issues.push('✅ DKIM: Properly configured');
+      issues.push('[OK] DKIM: Properly configured');
     }
 
     // Generate final report

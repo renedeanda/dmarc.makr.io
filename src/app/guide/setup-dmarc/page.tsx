@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AlertCircle, CheckCircle } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export const metadata = {
   title: 'Complete DMARC Setup Guide - Step-by-Step Tutorial | DMARC Checker',
@@ -8,27 +9,33 @@ export const metadata = {
 
 export default function SetupDmarcGuide() {
   return (
-    <article className="prose prose-lg max-w-none">
-      {/* Article Header */}
-      <div className="not-prose mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Complete DMARC Setup Guide
-        </h1>
-        <div className="flex items-center gap-4 text-sm text-gray-600">
-          <span className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            10 min read
-          </span>
-          <span>•</span>
-          <span>Last updated: November 2025</span>
-          <span>•</span>
-          <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
-            Beginner Friendly
-          </span>
-        </div>
-      </div>
+    <>
+      <PageHeader
+        title="Complete DMARC Setup Guide"
+        description="Step-by-step instructions for implementing DMARC on your domain from scratch."
+        breadcrumbs={[
+          { label: 'Guides', href: '/guide' },
+          { label: 'DMARC Setup' }
+        ]}
+      />
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <article className="prose prose-lg max-w-none">
+          {/* Meta info */}
+          <div className="not-prose flex items-center gap-4 text-sm text-gray-600 mb-8">
+            <span className="flex items-center gap-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              10 min read
+            </span>
+            <span>•</span>
+            <span>Last updated: November 2025</span>
+            <span>•</span>
+            <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+              Beginner Friendly
+            </span>
+          </div>
 
       {/* Introduction */}
       <div className="not-prose bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
@@ -258,6 +265,8 @@ export default function SetupDmarcGuide() {
           </Link>
         </div>
       </div>
-    </article>
+        </article>
+      </div>
+    </>
   );
 }

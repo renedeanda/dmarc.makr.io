@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Home, ChevronRight } from 'lucide-react';
 
 export default function GuideLayout({
   children,
@@ -8,24 +7,8 @@ export default function GuideLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-gray-600 hover:text-amber-600 flex items-center gap-1">
-              <Home className="w-4 h-4" />
-              Home
-            </Link>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
-            <Link href="/guide" className="text-gray-600 hover:text-amber-600">
-              Guides
-            </Link>
-          </nav>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-5xl mx-auto px-4 py-12">
         {children}
       </div>
 

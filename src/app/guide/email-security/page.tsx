@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Shield, Lock, CheckCircle, AlertTriangle, Mail, Key, ArrowRight } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export const metadata = {
   title: 'Email Security Best Practices | Complete Guide to Email Authentication',
@@ -8,17 +9,17 @@ export const metadata = {
 
 export default function EmailSecurityPage() {
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Hero Section */}
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Email Security Best Practices
-        </h1>
-        <p className="text-xl text-gray-600 leading-relaxed">
-          Comprehensive guide to protecting your domain and users from email-based threats,
-          phishing attacks, and brand impersonation.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        title="Email Security Best Practices"
+        description="Comprehensive guide to protecting your domain and users from email-based threats, phishing attacks, and brand impersonation."
+        breadcrumbs={[
+          { label: 'Guides', href: '/guide' },
+          { label: 'Email Security' }
+        ]}
+      />
+
+      <div className="max-w-5xl mx-auto px-4 py-8">
 
       {/* Why it Matters */}
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-8 mb-12">
@@ -450,6 +451,7 @@ export default function EmailSecurityPage() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

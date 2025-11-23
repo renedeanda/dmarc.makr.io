@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Book, Wrench, Shield, ArrowRight } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 export const metadata = {
   title: 'DMARC Email Security Guides & Tutorials | DMARC Checker',
@@ -57,19 +58,18 @@ const guides = [
 
 export default function GuidesPage() {
   return (
-    <div>
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Email Security Guides
-        </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Everything you need to know about DMARC, SPF, DKIM, and email authentication.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        title="Email Security Guides"
+        description="Everything you need to know about DMARC, SPF, DKIM, and email authentication."
+        breadcrumbs={[
+          { label: 'Guides' }
+        ]}
+      />
 
-      {/* Guide Categories */}
-      <div className="space-y-12">
+      <div className="max-w-5xl mx-auto px-4 py-12">
+        {/* Guide Categories */}
+        <div className="space-y-12">
         {guides.map((category) => {
           const Icon = category.icon;
           return (
@@ -136,6 +136,7 @@ export default function GuidesPage() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

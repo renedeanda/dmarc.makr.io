@@ -16,6 +16,13 @@ const tools = [
     color: 'bg-blue-500'
   },
   {
+    title: 'SPF Record Generator',
+    description: 'Build valid SPF records to authorize your mail servers with IP addresses and includes.',
+    href: '/tools/spf-generator',
+    icon: Wrench,
+    color: 'bg-indigo-500'
+  },
+  {
     title: 'Bulk Domain Checker',
     description: 'Check DMARC, SPF, and DKIM records for up to 50 domains at once with CSV export.',
     href: '/tools/bulk-checker',
@@ -43,7 +50,7 @@ export default function ToolsPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto px-4 pb-12">
           {/* Tools Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {tools.map((tool) => {

@@ -20,7 +20,7 @@ export default function EmailSecurityPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="max-w-5xl mx-auto px-4 pb-12">
 
       {/* Why it Matters */}
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-8 mb-12">

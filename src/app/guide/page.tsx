@@ -20,6 +20,20 @@ const guides = [
         difficulty: 'Beginner'
       },
       {
+        title: 'DMARC for Google Workspace',
+        description: 'Platform-specific guide for setting up DMARC, SPF, and DKIM with Google Workspace.',
+        href: '/guide/google-workspace',
+        readTime: '15 min',
+        difficulty: 'Beginner'
+      },
+      {
+        title: 'DMARC for Microsoft 365',
+        description: 'Complete setup guide for implementing email authentication in Microsoft 365.',
+        href: '/guide/microsoft-365',
+        readTime: '15 min',
+        difficulty: 'Beginner'
+      },
+      {
         title: 'Email Security Best Practices',
         description: 'Essential security practices to protect your domain from email-based threats.',
         href: '/guide/email-security',
@@ -32,6 +46,13 @@ const guides = [
     category: 'Understanding',
     icon: Shield,
     guides: [
+      {
+        title: 'Understanding DMARC Reports',
+        description: 'Learn how to read and interpret aggregate and forensic DMARC reports.',
+        href: '/guide/dmarc-reports',
+        readTime: '12 min',
+        difficulty: 'Intermediate'
+      },
       {
         title: 'DMARC, SPF & DKIM Comparison',
         description: 'Understand the differences between DMARC, SPF, and DKIM and how they work together.',
@@ -68,7 +89,7 @@ export default function GuidesPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto px-4 pb-12">
           {/* Guide Categories */}
           <div className="space-y-12">
         {guides.map((category) => {

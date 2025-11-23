@@ -20,7 +20,7 @@ export default function SetupDmarcGuide() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 pb-12">
           <article className="prose prose-lg max-w-none">
           {/* Meta info */}
           <div className="not-prose flex items-center gap-4 text-sm text-gray-600 mb-8">

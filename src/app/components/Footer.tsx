@@ -32,7 +32,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/tools/generator" className="text-gray-600 hover:text-amber-600 transition-colors">
-                  Record Generator
+                  DMARC Generator
+                </Link>
+              </li>
+              <li>
+                <Link href="/tools/spf-generator" className="text-gray-600 hover:text-amber-600 transition-colors">
+                  SPF Generator
                 </Link>
               </li>
               <li>

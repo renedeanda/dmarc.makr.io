@@ -2,8 +2,10 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Lock, ChevronDown } from 'lucide-react';
 import DmarcTagExplanation from './DmarcTagExplanation';
+import FaqSection from './components/FaqSection';
+import Footer from './components/Footer';
 import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
 import Script from 'next/script';
 
@@ -55,22 +57,49 @@ export default function Home() {
         `}
       </Script>
       <main className="min-h-screen bg-gray-100 flex flex-col">
-        {/* Rede.io Promotion Banner */}
-        <div className="bg-amber-500 text-white py-2 text-center">
-          <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
-            Check out 📚 Rede.io for your daily tech newsletter!
-          </a>
-        </div>
-
         <div className="flex-grow py-6 flex flex-col justify-center sm:py-12">
           <div className="relative py-3 sm:max-w-xl sm:mx-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
             <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
               <div className="max-w-md mx-auto">
-                <div>
-                  <h1 className="text-2xl font-semibold font-iowan-old-style text-amber-500">DMARC Domain Checker</h1>
-                  <p className="mt-2 text-gray-600">Check your domain's email security setup</p>
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-2 mb-4">
+                    <svg className="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
+                    </svg>
+                    <span className="text-sm font-medium text-amber-800">Trusted by 10,000+ IT professionals</span>
+                  </div>
+
+                  <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                    Check Your DMARC Security in 30 Seconds
+                  </h1>
+
+                  <div className="flex items-center justify-center gap-4 text-sm text-gray-600 mb-2">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      Free
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      No Signup
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      Instant Results
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <Lock className="w-4 h-4" />
+                    <span>Your domain data never leaves your browser</span>
+                  </div>
                 </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-sm text-blue-800">
+                  <strong>How it works:</strong> We perform DNS lookups directly from your browser to check your DMARC, SPF, and DKIM records. Nothing is stored or sent to our servers.
+                </div>
+
                 <div className="divide-y divide-gray-200">
                   <form onSubmit={checkDomain} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                     <div className="relative">
@@ -109,15 +138,16 @@ export default function Home() {
           </div>
         </div>
         <DmarcTagExplanation />
-        <footer className="text-center text-gray-500 text-sm py-4">
-          &copy; {new Date().getFullYear()} Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
-        </footer>
+        <FaqSection />
+        <Footer />
       </main>
     </>
   );
 }
 
 const RecordStatus = ({ name, status, record }: { name: string; status: string; record: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const getIcon = () => {
     switch (status) {
       case 'valid':
@@ -129,33 +159,70 @@ const RecordStatus = ({ name, status, record }: { name: string; status: string; 
     }
   };
 
+  const getSeverityBadge = () => {
+    if (status === 'valid') {
+      return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">Good</span>;
+    }
+    if (status === 'invalid') {
+      return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Critical</span>;
+    }
+    return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Warning</span>;
+  };
+
   const getRemediation = () => {
     switch (status) {
       case 'not found':
-        return `Your domain does not have a ${name} record. We recommend setting up a ${name} record to improve your email security.`;
+        return {
+          title: 'Missing Record',
+          description: `Your domain does not have a ${name} record. This makes your domain vulnerable to email spoofing.`,
+          action: `Set up a ${name} record to improve your email security.`
+        };
       case 'invalid':
-        return `Your ${name} record is invalid. Please review and correct your ${name} configuration.`;
+        return {
+          title: 'Invalid Configuration',
+          description: `Your ${name} record contains errors.`,
+          action: `Review and correct your ${name} configuration.`
+        };
       default:
-        return '';
+        return null;
     }
   };
 
+  const remediation = getRemediation();
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 shadow">
-      <div className="flex items-center space-x-2 mb-2">
-        {getIcon()}
-        <span className="font-semibold">{name}: {status}</span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          {getIcon()}
+          <span className="font-semibold">{name}</span>
+          {getSeverityBadge()}
+        </div>
+        {record && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            {isExpanded ? 'Hide details' : 'Show details'}
+            <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </button>
+        )}
       </div>
-      {record && (
-        <div className="mt-2">
-          <h4 className="font-semibold">Current Record:</h4>
-          <pre className="bg-gray-100 p-2 rounded mt-1 overflow-x-auto">{record}</pre>
+
+      {isExpanded && record && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <h4 className="font-semibold text-sm mb-1">Current Record:</h4>
+            <pre className="bg-white p-3 rounded border border-gray-200 text-xs overflow-x-auto">{record}</pre>
+          </div>
         </div>
       )}
-      {(status === 'not found' || status === 'invalid') && (
-        <div className="mt-2 text-red-600">
-          <h4 className="font-semibold">Remediation:</h4>
-          <p>{getRemediation()}</p>
+
+      {remediation && (
+        <div className="mt-3 bg-white rounded border border-red-200 p-3">
+          <h4 className="font-semibold text-sm text-red-800 mb-1">{remediation.title}</h4>
+          <p className="text-sm text-gray-700 mb-2">{remediation.description}</p>
+          <p className="text-sm text-gray-700"><strong>Action needed:</strong> {remediation.action}</p>
         </div>
       )}
     </div>

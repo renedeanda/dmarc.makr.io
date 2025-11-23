@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, AlertCircle, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 const issues = [
   {
@@ -254,17 +255,17 @@ export default function CommonIssuesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Common DMARC, SPF & DKIM Issues
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Troubleshoot email authentication problems with step-by-step solutions for the most common issues.
-          </p>
-        </div>
+    <>
+      <PageHeader
+        title="Common DMARC, SPF & DKIM Issues"
+        description="Troubleshoot email authentication problems with step-by-step solutions for the most common issues."
+        breadcrumbs={[
+          { label: 'Troubleshooting' }
+        ]}
+      />
+
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 py-12">
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -459,6 +460,7 @@ export default function CommonIssuesPage() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

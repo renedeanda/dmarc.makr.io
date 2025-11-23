@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export const metadata = {
   title: 'DMARC vs SPF vs DKIM: Complete Comparison Guide | Email Authentication',
@@ -8,17 +9,18 @@ export const metadata = {
 
 export default function EmailAuthComparisonPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            DMARC vs SPF vs DKIM
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Understanding the three pillars of email authentication and how they work together to protect your domain.
-          </p>
-        </div>
+    <>
+      <PageHeader
+        title="DMARC vs SPF vs DKIM"
+        description="Understanding the three pillars of email authentication and how they work together to protect your domain."
+        breadcrumbs={[
+          { label: 'Compare', href: '/compare/email-authentication' },
+          { label: 'Email Authentication' }
+        ]}
+      />
+
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 py-12">
 
         {/* Quick Answer */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-12">
@@ -198,6 +200,7 @@ export default function EmailAuthComparisonPage() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

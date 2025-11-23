@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { Search, CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
+import { Search, CheckCircle, XCircle, AlertCircle, Info, Loader2 } from 'lucide-react';
 import PageHeader from '../../components/PageHeader';
 
 interface ParsedTag {
@@ -16,19 +16,25 @@ export default function DMARCAnalyzerPage() {
   const [record, setRecord] = useState('');
   const [parsed, setParsed] = useState<ParsedTag[] | null>(null);
   const [error, setError] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const analyzeRecord = () => {
     setError('');
     setParsed(null);
+    setIsAnalyzing(true);
 
     if (!record.trim()) {
       setError('Please enter a DMARC record');
+      setIsAnalyzing(false);
       return;
     }
 
-    try {
-      const tags = record.split(';').map(t => t.trim()).filter(t => t);
-      const results: ParsedTag[] = [];
+    // Small delay for visual feedback
+    setTimeout(() => {
+      try {
+        const tags = record.split(';').map(t => t.trim()).filter(t => t);
+        const results: ParsedTag[] = [];
 
       tags.forEach(tag => {
         const [key, value] = tag.split('=').map(s => s.trim());
@@ -160,37 +166,46 @@ export default function DMARCAnalyzerPage() {
         }
       });
 
-      if (results.length === 0) {
-        setError('No valid DMARC tags found');
-        return;
+        if (results.length === 0) {
+          setError('No valid DMARC tags found');
+          setIsAnalyzing(false);
+          return;
+        }
+
+        // Check for required tags
+        const hasVersion = results.some(r => r.tag.startsWith('v'));
+        const hasPolicy = results.some(r => r.tag.startsWith('p'));
+
+        if (!hasVersion) {
+          results.unshift({
+            tag: 'Missing: v',
+            value: '',
+            description: 'Version tag is required! Should be v=DMARC1',
+            status: 'warning'
+          });
+        }
+
+        if (!hasPolicy) {
+          results.push({
+            tag: 'Missing: p',
+            value: '',
+            description: 'Policy tag is required! Should be p=none, p=quarantine, or p=reject',
+            status: 'warning'
+          });
+        }
+
+        setParsed(results);
+        setIsAnalyzing(false);
+
+        // Scroll to results after a brief moment
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } catch (err) {
+        setError('Failed to parse DMARC record. Please check the format.');
+        setIsAnalyzing(false);
       }
-
-      // Check for required tags
-      const hasVersion = results.some(r => r.tag.startsWith('v'));
-      const hasPolicy = results.some(r => r.tag.startsWith('p'));
-
-      if (!hasVersion) {
-        results.unshift({
-          tag: 'Missing: v',
-          value: '',
-          description: 'Version tag is required! Should be v=DMARC1',
-          status: 'warning'
-        });
-      }
-
-      if (!hasPolicy) {
-        results.push({
-          tag: 'Missing: p',
-          value: '',
-          description: 'Policy tag is required! Should be p=none, p=quarantine, or p=reject',
-          status: 'warning'
-        });
-      }
-
-      setParsed(results);
-    } catch (err) {
-      setError('Failed to parse DMARC record. Please check the format.');
-    }
+    }, 300);
   };
 
   const getStatusIcon = (status: string) => {
@@ -244,10 +259,20 @@ export default function DMARCAnalyzerPage() {
 
           <button
             onClick={analyzeRecord}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+            disabled={isAnalyzing}
+            className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
-            <Search className="w-5 h-5" />
-            Analyze Record
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Search className="w-5 h-5" />
+                Analyze Record
+              </>
+            )}
           </button>
 
           {error && (
@@ -266,21 +291,162 @@ export default function DMARCAnalyzerPage() {
                 key={idx}
                 onClick={() => {
                   setRecord(example.record);
-                  setParsed(null);
                   setError('');
+                  setParsed(null);
+                  setIsAnalyzing(true);
+
+                  // Auto-analyze the example
+                  setTimeout(() => {
+                    const tags = example.record.split(';').map(t => t.trim()).filter(t => t);
+                    const results: ParsedTag[] = [];
+
+                    tags.forEach(tag => {
+                      const [key, value] = tag.split('=').map(s => s.trim());
+
+                      switch (key) {
+                        case 'v':
+                          results.push({
+                            tag: 'v (Version)',
+                            value,
+                            description: value === 'DMARC1' ? 'Correct version identifier' : 'Invalid version - should be DMARC1',
+                            status: value === 'DMARC1' ? 'good' : 'warning'
+                          });
+                          break;
+                        case 'p':
+                          const policyDesc = {
+                            'none': 'Monitoring only - no action taken on failed emails. Good for initial deployment.',
+                            'quarantine': 'Failed emails sent to spam. Recommended after monitoring period.',
+                            'reject': 'Failed emails blocked entirely. Strongest protection, use with caution.'
+                          }[value] || 'Invalid policy value';
+                          results.push({
+                            tag: 'p (Policy)',
+                            value,
+                            description: policyDesc,
+                            status: ['none', 'quarantine', 'reject'].includes(value) ? 'good' : 'warning'
+                          });
+                          break;
+                        case 'sp':
+                          const spDesc = {
+                            'none': 'Subdomains: Monitoring only',
+                            'quarantine': 'Subdomains: Failed emails sent to spam',
+                            'reject': 'Subdomains: Failed emails blocked'
+                          }[value] || 'Invalid subdomain policy';
+                          results.push({
+                            tag: 'sp (Subdomain Policy)',
+                            value,
+                            description: spDesc,
+                            status: ['none', 'quarantine', 'reject'].includes(value) ? 'good' : 'warning'
+                          });
+                          break;
+                        case 'rua':
+                          results.push({
+                            tag: 'rua (Aggregate Reports)',
+                            value,
+                            description: `Aggregate reports sent to: ${value}. You'll receive daily summaries of authentication results.`,
+                            status: value.includes('mailto:') ? 'good' : 'warning'
+                          });
+                          break;
+                        case 'ruf':
+                          results.push({
+                            tag: 'ruf (Forensic Reports)',
+                            value,
+                            description: `Forensic reports sent to: ${value}. Individual failure reports (can be high volume).`,
+                            status: value.includes('mailto:') ? 'good' : 'warning'
+                          });
+                          break;
+                        case 'pct':
+                          const pct = parseInt(value);
+                          results.push({
+                            tag: 'pct (Percentage)',
+                            value,
+                            description: `Policy applied to ${value}% of emails. ${pct < 100 ? 'Consider increasing to 100 after testing.' : 'Policy applied to all emails.'}`,
+                            status: pct === 100 ? 'good' : 'info'
+                          });
+                          break;
+                        case 'adkim':
+                          results.push({
+                            tag: 'adkim (DKIM Alignment)',
+                            value,
+                            description: value === 's' ? 'Strict alignment - DKIM domain must exactly match From domain' : 'Relaxed alignment - DKIM can be on subdomain (default)',
+                            status: 'info'
+                          });
+                          break;
+                        case 'aspf':
+                          results.push({
+                            tag: 'aspf (SPF Alignment)',
+                            value,
+                            description: value === 's' ? 'Strict alignment - SPF domain must exactly match From domain' : 'Relaxed alignment - SPF can be on subdomain (default)',
+                            status: 'info'
+                          });
+                          break;
+                        case 'fo':
+                          const foDesc = {
+                            '0': 'Generate report if both SPF and DKIM fail',
+                            '1': 'Generate report if either SPF or DKIM fails',
+                            'd': 'Generate report if DKIM fails',
+                            's': 'Generate report if SPF fails'
+                          }[value] || 'Forensic options set';
+                          results.push({
+                            tag: 'fo (Forensic Options)',
+                            value,
+                            description: foDesc,
+                            status: 'info'
+                          });
+                          break;
+                        case 'rf':
+                          results.push({
+                            tag: 'rf (Report Format)',
+                            value,
+                            description: `Report format: ${value} (usually 'afrf' for Auth Failure Reporting Format)`,
+                            status: 'info'
+                          });
+                          break;
+                        case 'ri':
+                          results.push({
+                            tag: 'ri (Report Interval)',
+                            value,
+                            description: `Reports sent every ${value} seconds (${Math.round(parseInt(value) / 3600)} hours)`,
+                            status: 'info'
+                          });
+                          break;
+                        default:
+                          results.push({
+                            tag: key,
+                            value,
+                            description: 'Unknown or custom tag',
+                            status: 'info'
+                          });
+                      }
+                    });
+
+                    setParsed(results);
+                    setIsAnalyzing(false);
+
+                    setTimeout(() => {
+                      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                  }, 300);
                 }}
-                className="text-left bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-4 transition-colors"
+                className="text-left bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 hover:border-amber-400 rounded-lg p-4 transition-all group"
               >
-                <h4 className="font-semibold text-gray-900 mb-2">{example.name}</h4>
-                <code className="text-xs text-gray-600 break-all">{example.record}</code>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900">{example.name}</h4>
+                  <span className="text-xs bg-amber-600 text-white px-2 py-1 rounded font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    Try It
+                  </span>
+                </div>
+                <code className="text-xs text-gray-600 break-all block">{example.record}</code>
               </button>
             ))}
           </div>
+          <p className="text-sm text-gray-500 mt-4 text-center">
+            Click any example to load and analyze it automatically
+          </p>
         </div>
 
         {/* Results */}
         {parsed && parsed.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div ref={resultsRef} className="bg-white rounded-lg shadow-md overflow-hidden scroll-mt-4">
             <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-amber-50 to-amber-100">
               <h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
               <p className="text-gray-700 mt-1">
@@ -296,10 +462,10 @@ export default function DMARCAnalyzerPage() {
                       {getStatusIcon(tag.status)}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
                         <h3 className="text-lg font-bold text-gray-900">{tag.tag}</h3>
                         {tag.value && (
-                          <code className="bg-gray-100 px-3 py-1 rounded text-sm text-gray-800 font-mono">
+                          <code className="bg-gray-100 px-3 py-1 rounded text-sm text-gray-800 font-mono break-all">
                             {tag.value}
                           </code>
                         )}

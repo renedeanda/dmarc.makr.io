@@ -8,12 +8,12 @@ export default function GuideLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div>
         {children}
       </div>
 
       {/* CTA Section */}
-      <div className="bg-amber-50 border-y border-amber-200 py-12 mt-16">
+      <div className="bg-amber-50 border-y border-amber-200 py-12 mt-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Ready to check your DMARC records?

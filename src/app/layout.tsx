@@ -2,7 +2,7 @@ import './globals.css'
 
 export const metadata = {
   title: 'DMARC Checker - Instant Results, No Signup Required | Free Tool',
-  description: 'Check your DMARC, SPF & DKIM records in 30 seconds. Free, instant, private - your data never leaves your browser. Trusted by 10,000+ IT professionals.',
+  description: 'Check your DMARC, SPF & DKIM records in 30 seconds. Free, instant, and completely private - all checks run in your browser.',
   keywords: 'DMARC checker free, instant DMARC test, SPF DKIM checker, email authentication, domain security, DMARC validator, no signup tool',
   openGraph: {
     title: 'Free DMARC Checker - Instant Results, No Signup | Privacy-First',
@@ -44,12 +44,6 @@ export default function RootLayout({
               url: "https://dmarc.makr.io",
               applicationCategory: "SecurityApplication",
               browserRequirements: "Any modern web browser",
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.8",
-                ratingCount: "1247",
-                bestRating: "5"
-              },
               offers: {
                 "@type": "Offer",
                 price: "0",
@@ -64,11 +58,9 @@ export default function RootLayout({
                 "Instant DMARC record checking",
                 "SPF record validation",
                 "DKIM record verification",
+                "Client-side DNS lookups",
                 "No signup required",
-                "Privacy-first (client-side only)",
-                "Bulk domain checking",
-                "DMARC record generator",
-                "Historical tracking"
+                "Privacy-first design"
               ]
             })
           }}

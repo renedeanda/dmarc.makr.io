@@ -24,26 +24,25 @@ export default function TermsPage() {
 
           <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Use of Service</h2>
           <p className="text-gray-700 mb-4">
-            DMARC Checker is provided as a free tool to check DMARC, SPF, and DKIM records for domains. You may use
-            this Service for:
+            DMARC Checker is a free tool that queries publicly available DNS records. DNS records (including DMARC, SPF, and DKIM) are public information that anyone can look up. You may use this Service to check any domain for:
           </p>
           <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-            <li>Checking your own domain's email authentication records</li>
+            <li>Verifying email authentication configurations</li>
             <li>Educational and learning purposes</li>
-            <li>Verifying email security configurations</li>
-            <li>Troubleshooting email deliverability issues</li>
+            <li>Security research and analysis</li>
+            <li>Troubleshooting email deliverability</li>
+            <li>Any other legitimate purpose</li>
           </ul>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Prohibited Uses</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Acceptable Use</h2>
           <p className="text-gray-700 mb-4">
-            You may not use this Service to:
+            While checking DNS records is legal and the information is public, please use this Service responsibly:
           </p>
           <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-            <li>Check domains you do not own or do not have permission to check</li>
-            <li>Perform automated or bulk checking that could overload the Service</li>
-            <li>Attempt to reverse engineer, decompile, or hack the Service</li>
-            <li>Use the Service for any illegal or unauthorized purpose</li>
-            <li>Violate any applicable laws or regulations</li>
+            <li>Avoid excessive automated requests that could impact service availability for others</li>
+            <li>Do not attempt to exploit, hack, or compromise the Service</li>
+            <li>Use the information obtained for lawful purposes only</li>
+            <li>Respect applicable laws and regulations</li>
           </ul>
 
           <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">No Warranty</h2>

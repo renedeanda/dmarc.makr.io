@@ -19,6 +19,19 @@ export default function Home() {
   // Initialize Google Analytics
   useGoogleAnalytics();
 
+  const calculateSecurityScore = (results: any) => {
+    let score = 0;
+    if (results.dmarc === 'valid') score += 40;
+    else if (results.dmarc === 'invalid') score += 10;
+
+    if (results.spf === 'valid') score += 30;
+    else if (results.spf === 'invalid') score += 10;
+
+    if (results.dkimResults?.some((d: any) => d.status === 'valid')) score += 30;
+
+    return score;
+  };
+
   const checkDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -62,42 +75,34 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
             <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
               <div className="max-w-md mx-auto">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-2 mb-4">
-                    <svg className="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
-                    </svg>
-                    <span className="text-sm font-medium text-amber-800">Trusted by 10,000+ IT professionals</span>
-                  </div>
-
-                  <h1 className="text-3xl font-bold text-gray-900 mb-3">
-                    Check Your DMARC Security in 30 Seconds
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    DMARC Checker
                   </h1>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Check your email security in seconds. Free, instant, and completely private.
+                  </p>
 
-                  <div className="flex items-center justify-center gap-4 text-sm text-gray-600 mb-2">
-                    <span className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                      Free
+                  <div className="inline-flex flex-wrap items-center justify-center gap-3 mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium">
+                      <CheckCircle className="w-4 h-4" />
+                      Free Forever
                     </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                      No Signup
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                      <Lock className="w-4 h-4" />
+                      100% Private
                     </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-medium">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
                       Instant Results
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                    <Lock className="w-4 h-4" />
-                    <span>Your domain data never leaves your browser</span>
+                  <div className="text-sm text-gray-500">
+                    All checks run in your browser. No data is sent to our servers.
                   </div>
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-sm text-blue-800">
-                  <strong>How it works:</strong> We perform DNS lookups directly from your browser to check your DMARC, SPF, and DKIM records. Nothing is stored or sent to our servers.
                 </div>
 
                 <div className="divide-y divide-gray-200">
@@ -123,8 +128,11 @@ export default function Home() {
                   {error && <p className="text-red-500 bg-red-100 border border-red-400 rounded p-3">{error}</p>}
                   {results && (
                     <div className="py-8">
-                      <h2 className="text-xl font-semibold mb-4">Results for {checkedDomain}</h2>
-                      <div className="space-y-4">
+                      <h2 className="text-xl font-semibold mb-6">Results for {checkedDomain}</h2>
+
+                      <SecurityScore score={calculateSecurityScore(results)} />
+
+                      <div className="space-y-4 mt-6">
                         <RecordStatus name="DMARC" status={results.dmarc} record={results.dmarcRecord} />
                         <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
                         <DkimStatus dkimResults={results.dkimResults} />
@@ -144,6 +152,51 @@ export default function Home() {
     </>
   );
 }
+
+const SecurityScore = ({ score }: { score: number }) => {
+  const getScoreColor = () => {
+    if (score >= 80) return 'bg-green-50 border-green-200';
+    if (score >= 50) return 'bg-yellow-50 border-yellow-200';
+    return 'bg-red-50 border-red-200';
+  };
+
+  const getScoreTextColor = () => {
+    if (score >= 80) return 'text-green-700';
+    if (score >= 50) return 'text-yellow-700';
+    return 'text-red-700';
+  };
+
+  const getScoreLabel = () => {
+    if (score >= 80) return { text: 'Good Security', icon: CheckCircle, color: 'text-green-600' };
+    if (score >= 50) return { text: 'Needs Improvement', icon: AlertCircle, color: 'text-yellow-600' };
+    return { text: 'Critical Issues', icon: XCircle, color: 'text-red-600' };
+  };
+
+  const label = getScoreLabel();
+  const Icon = label.icon;
+
+  return (
+    <div className={`border rounded-lg p-6 ${getScoreColor()}`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Icon className={`w-5 h-5 ${label.color}`} />
+            <span className={`text-lg font-semibold ${getScoreTextColor()}`}>{label.text}</span>
+          </div>
+          <p className={`text-sm ${getScoreTextColor()}`}>
+            {score >= 80 && 'Your email authentication is properly configured.'}
+            {score >= 50 && score < 80 && 'Some records are configured, but improvements needed.'}
+            {score < 50 && 'Your domain has critical email security issues.'}
+          </p>
+        </div>
+        <div className="text-center">
+          <div className={`text-5xl font-bold ${getScoreTextColor()}`}>{score}</div>
+          <div className={`text-sm ${getScoreTextColor()} opacity-75`}>/ 100</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const RecordStatus = ({ name, status, record }: { name: string; status: string; record: string }) => {
   const [isExpanded, setIsExpanded] = useState(false);

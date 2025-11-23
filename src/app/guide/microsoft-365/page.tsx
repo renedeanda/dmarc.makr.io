@@ -20,10 +20,10 @@ export default function Microsoft365Guide() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 pb-12">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 pb-8 pt-6">
           <article className="prose prose-lg max-w-none">
           {/* Meta info */}
-          <div className="not-prose flex items-center gap-4 text-sm text-gray-600 mb-8">
+          <div className="not-prose flex items-center gap-4 text-sm text-gray-600 mb-6">
             <span className="flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

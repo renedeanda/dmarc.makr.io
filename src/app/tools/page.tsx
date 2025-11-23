@@ -50,7 +50,7 @@ export default function ToolsPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 pb-8 pt-8">
           {/* Tools Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {tools.map((tool) => {

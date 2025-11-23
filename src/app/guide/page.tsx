@@ -89,9 +89,9 @@ export default function GuidesPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 pb-8 pt-8">
           {/* Guide Categories */}
-          <div className="space-y-12">
+          <div className="space-y-8">
             {guides.map((category) => {
               const Icon = category.icon;
               return (
@@ -141,7 +141,7 @@ export default function GuidesPage() {
           </div>
 
           {/* Quick Links */}
-          <div className="mt-16 bg-gray-100 rounded-lg p-8">
+          <div className="mt-12 bg-gray-100 rounded-lg p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Helpful Tools</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/tools/generator" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">

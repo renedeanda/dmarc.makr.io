@@ -20,9 +20,9 @@ export default function EmailSecurityPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 pb-8 pt-6">
           {/* Why it Matters */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-8 mb-12">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6 mb-8">
         <div className="flex items-start gap-4">
           <AlertTriangle className="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
           <div>

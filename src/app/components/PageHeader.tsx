@@ -21,10 +21,10 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Breadcrumbs */}
         {(showHomeLink || breadcrumbs.length > 0) && (
-          <nav className="flex items-center gap-2 text-sm py-4">
+          <nav className="flex items-center gap-2 text-sm py-3">
             {showHomeLink && (
               <>
                 <Link href="/" className="text-gray-600 hover:text-amber-600 flex items-center gap-1 transition-colors">
@@ -55,12 +55,12 @@ export default function PageHeader({
         )}
 
         {/* Page Title */}
-        <div className="py-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+        <div className="py-6 pb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
             {title}
           </h1>
           {description && (
-            <p className="text-xl text-gray-600 max-w-3xl">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl">
               {description}
             </p>
           )}

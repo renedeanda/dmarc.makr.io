@@ -11,6 +11,7 @@ import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
 import { useCheckHistory } from '../hooks/useCheckHistory';
 import Script from 'next/script';
 import PageHeader from './components/PageHeader';
+import Navigation from './components/Navigation';
 
 export default function Home() {
   const [domain, setDomain] = useState('');
@@ -120,6 +121,8 @@ export default function Home() {
           gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
         `}
       </Script>
+
+      <Navigation />
 
       <PageHeader
         title="Free DMARC Checker"

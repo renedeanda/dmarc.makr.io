@@ -302,13 +302,22 @@ export default function BulkCheckerPage() {
 
             {!isChecking && completedCount === totalCount && (
               <div className="p-6 bg-gray-50 border-t border-gray-200">
-                <p className="text-sm text-gray-600">
-                  ✅ All checks complete! Download the CSV for a full report, or{' '}
-                  <Link href="/" className="text-amber-600 hover:text-amber-700 font-medium">
-                    check individual domains
-                  </Link>
-                  {' '}for detailed recommendations.
-                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-sm text-gray-600">
+                    ✅ All checks complete! Download the CSV for a full report, or{' '}
+                    <Link href="/" className="text-amber-600 hover:text-amber-700 font-medium">
+                      check individual domains
+                    </Link>
+                    {' '}for detailed recommendations.
+                  </p>
+                  <button
+                    onClick={downloadCSV}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download CSV
+                  </button>
+                </div>
               </div>
             )}
           </div>

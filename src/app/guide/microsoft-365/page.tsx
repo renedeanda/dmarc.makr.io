@@ -164,14 +164,14 @@ export default function Microsoft365Guide() {
           <div className="bg-white border border-gray-200 rounded p-4">
             <p className="text-xs font-semibold text-gray-700 mb-2">Record 1:</p>
             <p className="text-xs text-gray-600 mb-1">Type: <span className="font-mono font-bold">CNAME</span></p>
-            <p className="text-xs text-gray-600 mb-1">Name: <span className="font-mono font-bold">selector1._domainkey</span></p>
-            <p className="text-xs text-gray-600">Value: <span className="font-mono">selector1-yourdomain-com._domainkey.yourtenant.onmicrosoft.com</span></p>
+            <p className="text-xs text-gray-600 mb-1">Name: <span className="font-mono font-bold break-all">selector1._domainkey</span></p>
+            <p className="text-xs text-gray-600">Value: <span className="font-mono break-all">selector1-yourdomain-com._domainkey.yourtenant.onmicrosoft.com</span></p>
           </div>
           <div className="bg-white border border-gray-200 rounded p-4">
             <p className="text-xs font-semibold text-gray-700 mb-2">Record 2:</p>
             <p className="text-xs text-gray-600 mb-1">Type: <span className="font-mono font-bold">CNAME</span></p>
-            <p className="text-xs text-gray-600 mb-1">Name: <span className="font-mono font-bold">selector2._domainkey</span></p>
-            <p className="text-xs text-gray-600">Value: <span className="font-mono">selector2-yourdomain-com._domainkey.yourtenant.onmicrosoft.com</span></p>
+            <p className="text-xs text-gray-600 mb-1">Name: <span className="font-mono font-bold break-all">selector2._domainkey</span></p>
+            <p className="text-xs text-gray-600">Value: <span className="font-mono break-all">selector2-yourdomain-com._domainkey.yourtenant.onmicrosoft.com</span></p>
           </div>
         </div>
       </div>

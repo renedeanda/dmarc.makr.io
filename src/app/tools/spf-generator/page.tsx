@@ -109,7 +109,7 @@ export default function SPFGeneratorPage() {
       />
 
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="max-w-5xl mx-auto px-4 pb-12 pt-8">
 
         {/* Info Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">

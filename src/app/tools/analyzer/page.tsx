@@ -296,10 +296,10 @@ export default function DMARCAnalyzerPage() {
                       {getStatusIcon(tag.status)}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
                         <h3 className="text-lg font-bold text-gray-900">{tag.tag}</h3>
                         {tag.value && (
-                          <code className="bg-gray-100 px-3 py-1 rounded text-sm text-gray-800 font-mono">
+                          <code className="bg-gray-100 px-3 py-1 rounded text-sm text-gray-800 font-mono break-all">
                             {tag.value}
                           </code>
                         )}

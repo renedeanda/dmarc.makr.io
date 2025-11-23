@@ -4,7 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-20">
+    <footer className="bg-gray-50 border-t border-gray-200 mt-8">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
@@ -38,6 +38,11 @@ export default function Footer() {
               <li>
                 <Link href="/tools/bulk-checker" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Bulk Checker
+                </Link>
+              </li>
+              <li>
+                <Link href="/tools/analyzer" className="text-gray-600 hover:text-amber-600 transition-colors">
+                  Policy Analyzer
                 </Link>
               </li>
             </ul>

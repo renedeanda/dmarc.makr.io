@@ -2,11 +2,14 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, AlertCircle, Lock, ChevronDown } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Lock, ChevronDown, Copy } from 'lucide-react';
 import DmarcTagExplanation from './DmarcTagExplanation';
 import FaqSection from './components/FaqSection';
 import Footer from './components/Footer';
+import CheckHistory from './components/CheckHistory';
+import ShareResults from './components/ShareResults';
 import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
+import { useCheckHistory } from '../hooks/useCheckHistory';
 import Script from 'next/script';
 
 export default function Home() {
@@ -16,8 +19,9 @@ export default function Home() {
   const [error, setError] = useState('');
   const [checkedDomain, setCheckedDomain] = useState('');
 
-  // Initialize Google Analytics
+  // Initialize Google Analytics and History
   useGoogleAnalytics();
+  const { addToHistory } = useCheckHistory();
 
   const calculateSecurityScore = (results: any) => {
     let score = 0;
@@ -48,11 +52,35 @@ export default function Home() {
       const data = await response.json();
       setResults(data);
       setCheckedDomain(trimmedDomain);
+
+      // Calculate score and save to history
+      const score = calculateSecurityScore(data);
+      const dkimStatus = data.dkimResults?.some((d: any) => d.status === 'valid') ? 'valid' :
+                        data.dkimResults?.length > 0 ? 'invalid' : 'not found';
+
+      addToHistory({
+        domain: trimmedDomain,
+        dmarcStatus: data.dmarc,
+        spfStatus: data.spf,
+        dkimStatus,
+        score
+      });
     } catch (err) {
       setError('An error occurred while checking the domain. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleHistorySelect = (selectedDomain: string) => {
+    setDomain(selectedDomain);
+    // Trigger the check automatically
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.requestSubmit();
+      }
+    }, 100);
   };
 
   return (
@@ -105,6 +133,11 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* History Dropdown */}
+                <div className="flex justify-end mb-4">
+                  <CheckHistory onSelectDomain={handleHistorySelect} />
+                </div>
+
                 <div className="divide-y divide-gray-200">
                   <form onSubmit={checkDomain} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                     <div className="relative">
@@ -124,8 +157,28 @@ export default function Home() {
                       </button>
                     </div>
                   </form>
-                  {loading && <p className="text-center">Checking domain...</p>}
-                  {error && <p className="text-red-500 bg-red-100 border border-red-400 rounded p-3">{error}</p>}
+                  {loading && (
+                    <div className="py-8 text-center">
+                      <div className="inline-flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                        <div>
+                          <p className="text-blue-900 font-medium">Checking {domain}...</p>
+                          <p className="text-blue-700 text-sm">Performing DNS lookups</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {error && (
+                    <div className="py-4">
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                        <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-red-800 font-medium">Check Failed</p>
+                          <p className="text-red-700 text-sm">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {results && (
                     <div className="py-8">
                       <h2 className="text-xl font-semibold mb-6">Results for {checkedDomain}</h2>
@@ -137,6 +190,13 @@ export default function Home() {
                         <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
                         <DkimStatus dkimResults={results.dkimResults} />
                       </div>
+
+                      <ShareResults
+                        domain={checkedDomain}
+                        results={results}
+                        score={calculateSecurityScore(results)}
+                      />
+
                       <SubdomainInheritance />
                     </div>
                   )}
@@ -200,6 +260,15 @@ const SecurityScore = ({ score }: { score: number }) => {
 
 const RecordStatus = ({ name, status, record }: { name: string; status: string; record: string }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyRecord = () => {
+    if (record) {
+      navigator.clipboard.writeText(record);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const getIcon = () => {
     switch (status) {
@@ -265,7 +334,25 @@ const RecordStatus = ({ name, status, record }: { name: string; status: string; 
       {isExpanded && record && (
         <div className="mt-3 space-y-2">
           <div>
-            <h4 className="font-semibold text-sm mb-1">Current Record:</h4>
+            <div className="flex items-center justify-between mb-1">
+              <h4 className="font-semibold text-sm">Current Record:</h4>
+              <button
+                onClick={copyRecord}
+                className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+              >
+                {copied ? (
+                  <>
+                    <CheckCircle className="w-3 h-3" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
             <pre className="bg-white p-3 rounded border border-gray-200 text-xs overflow-x-auto">{record}</pre>
           </div>
         </div>

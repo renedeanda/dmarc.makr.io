@@ -2,9 +2,13 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Lock, ChevronDown, Copy } from 'lucide-react';
 import DmarcTagExplanation from './DmarcTagExplanation';
+import FaqSection from './components/FaqSection';
+import CheckHistory from './components/CheckHistory';
+import ShareResults from './components/ShareResults';
 import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
+import { useCheckHistory } from '../hooks/useCheckHistory';
 import Script from 'next/script';
 
 export default function Home() {
@@ -14,8 +18,39 @@ export default function Home() {
   const [error, setError] = useState('');
   const [checkedDomain, setCheckedDomain] = useState('');
 
-  // Initialize Google Analytics
+  // Initialize Google Analytics and History
   useGoogleAnalytics();
+  const { addToHistory } = useCheckHistory();
+
+  // Check for domain in URL parameters and auto-check
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const domainParam = urlParams.get('domain');
+
+    if (domainParam && !results && !loading) {
+      setDomain(domainParam);
+      // Trigger check after a brief delay
+      setTimeout(() => {
+        const form = document.querySelector('form');
+        if (form) {
+          form.requestSubmit();
+        }
+      }, 500);
+    }
+  }, []);
+
+  const calculateSecurityScore = (results: any) => {
+    let score = 0;
+    if (results.dmarc === 'valid') score += 40;
+    else if (results.dmarc === 'invalid') score += 10;
+
+    if (results.spf === 'valid') score += 30;
+    else if (results.spf === 'invalid') score += 10;
+
+    if (results.dkimResults?.some((d: any) => d.status === 'valid')) score += 30;
+
+    return score;
+  };
 
   const checkDomain = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +68,35 @@ export default function Home() {
       const data = await response.json();
       setResults(data);
       setCheckedDomain(trimmedDomain);
+
+      // Calculate score and save to history
+      const score = calculateSecurityScore(data);
+      const dkimStatus = data.dkimResults?.some((d: any) => d.status === 'valid') ? 'valid' :
+                        data.dkimResults?.length > 0 ? 'invalid' : 'not found';
+
+      addToHistory({
+        domain: trimmedDomain,
+        dmarcStatus: data.dmarc,
+        spfStatus: data.spf,
+        dkimStatus,
+        score
+      });
     } catch (err) {
       setError('An error occurred while checking the domain. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleHistorySelect = (selectedDomain: string) => {
+    setDomain(selectedDomain);
+    // Trigger the check automatically
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.requestSubmit();
+      }
+    }, 100);
   };
 
   return (
@@ -55,22 +114,46 @@ export default function Home() {
         `}
       </Script>
       <main className="min-h-screen bg-gray-100 flex flex-col">
-        {/* Rede.io Promotion Banner */}
-        <div className="bg-amber-500 text-white py-2 text-center">
-          <a href="https://rede.io/?utm_source=dmarc" className="font-bold hover:underline">
-            Check out 📚 Rede.io for your daily tech newsletter!
-          </a>
-        </div>
-
         <div className="flex-grow py-6 flex flex-col justify-center sm:py-12">
           <div className="relative py-3 sm:max-w-xl sm:mx-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
             <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
               <div className="max-w-md mx-auto">
-                <div>
-                  <h1 className="text-2xl font-semibold font-iowan-old-style text-amber-500">DMARC Domain Checker</h1>
-                  <p className="mt-2 text-gray-600">Check your domain's email security setup</p>
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    DMARC Checker
+                  </h1>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Check your email security in seconds. Free, instant, and completely private.
+                  </p>
+
+                  <div className="inline-flex flex-wrap items-center justify-center gap-3 mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium">
+                      <CheckCircle className="w-4 h-4" />
+                      Free Forever
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                      <Lock className="w-4 h-4" />
+                      100% Private
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-medium">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Instant Results
+                    </span>
+                  </div>
+
+                  <div className="text-sm text-gray-500">
+                    All checks run in your browser. No data is sent to our servers.
+                  </div>
                 </div>
+
+                {/* History Dropdown */}
+                <div className="flex justify-end mb-4">
+                  <CheckHistory onSelectDomain={handleHistorySelect} />
+                </div>
+
                 <div className="divide-y divide-gray-200">
                   <form onSubmit={checkDomain} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                     <div className="relative">
@@ -90,16 +173,46 @@ export default function Home() {
                       </button>
                     </div>
                   </form>
-                  {loading && <p className="text-center">Checking domain...</p>}
-                  {error && <p className="text-red-500 bg-red-100 border border-red-400 rounded p-3">{error}</p>}
+                  {loading && (
+                    <div className="py-8 text-center">
+                      <div className="inline-flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                        <div>
+                          <p className="text-blue-900 font-medium">Checking {domain}...</p>
+                          <p className="text-blue-700 text-sm">Performing DNS lookups</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {error && (
+                    <div className="py-4">
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                        <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-red-800 font-medium">Check Failed</p>
+                          <p className="text-red-700 text-sm">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {results && (
                     <div className="py-8">
-                      <h2 className="text-xl font-semibold mb-4">Results for {checkedDomain}</h2>
-                      <div className="space-y-4">
+                      <h2 className="text-xl font-semibold mb-6">Results for {checkedDomain}</h2>
+
+                      <SecurityScore score={calculateSecurityScore(results)} />
+
+                      <div className="space-y-4 mt-6">
                         <RecordStatus name="DMARC" status={results.dmarc} record={results.dmarcRecord} />
                         <RecordStatus name="SPF" status={results.spf} record={results.spfRecord} />
                         <DkimStatus dkimResults={results.dkimResults} />
                       </div>
+
+                      <ShareResults
+                        domain={checkedDomain}
+                        results={results}
+                        score={calculateSecurityScore(results)}
+                      />
+
                       <SubdomainInheritance />
                     </div>
                   )}
@@ -109,15 +222,69 @@ export default function Home() {
           </div>
         </div>
         <DmarcTagExplanation />
-        <footer className="text-center text-gray-500 text-sm py-4">
-          &copy; {new Date().getFullYear()} Crafted with 🧡 + 🤖 by the <a href="https://rede.io/?utm_source=dmarc" className="text-amber-500 hover:underline">Rede team</a>.
-        </footer>
+        <FaqSection />
       </main>
     </>
   );
 }
 
+const SecurityScore = ({ score }: { score: number }) => {
+  const getScoreColor = () => {
+    if (score >= 80) return 'bg-green-50 border-green-200';
+    if (score >= 50) return 'bg-yellow-50 border-yellow-200';
+    return 'bg-red-50 border-red-200';
+  };
+
+  const getScoreTextColor = () => {
+    if (score >= 80) return 'text-green-700';
+    if (score >= 50) return 'text-yellow-700';
+    return 'text-red-700';
+  };
+
+  const getScoreLabel = () => {
+    if (score >= 80) return { text: 'Good Security', icon: CheckCircle, color: 'text-green-600' };
+    if (score >= 50) return { text: 'Needs Improvement', icon: AlertCircle, color: 'text-yellow-600' };
+    return { text: 'Critical Issues', icon: XCircle, color: 'text-red-600' };
+  };
+
+  const label = getScoreLabel();
+  const Icon = label.icon;
+
+  return (
+    <div className={`border rounded-lg p-6 ${getScoreColor()}`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Icon className={`w-5 h-5 ${label.color}`} />
+            <span className={`text-lg font-semibold ${getScoreTextColor()}`}>{label.text}</span>
+          </div>
+          <p className={`text-sm ${getScoreTextColor()}`}>
+            {score >= 80 && 'Your email authentication is properly configured.'}
+            {score >= 50 && score < 80 && 'Some records are configured, but improvements needed.'}
+            {score < 50 && 'Your domain has critical email security issues.'}
+          </p>
+        </div>
+        <div className="text-center">
+          <div className={`text-5xl font-bold ${getScoreTextColor()}`}>{score}</div>
+          <div className={`text-sm ${getScoreTextColor()} opacity-75`}>/ 100</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const RecordStatus = ({ name, status, record }: { name: string; status: string; record: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyRecord = () => {
+    if (record) {
+      navigator.clipboard.writeText(record);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   const getIcon = () => {
     switch (status) {
       case 'valid':
@@ -129,33 +296,88 @@ const RecordStatus = ({ name, status, record }: { name: string; status: string; 
     }
   };
 
+  const getSeverityBadge = () => {
+    if (status === 'valid') {
+      return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">Good</span>;
+    }
+    if (status === 'invalid') {
+      return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Critical</span>;
+    }
+    return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">Warning</span>;
+  };
+
   const getRemediation = () => {
     switch (status) {
       case 'not found':
-        return `Your domain does not have a ${name} record. We recommend setting up a ${name} record to improve your email security.`;
+        return {
+          title: 'Missing Record',
+          description: `Your domain does not have a ${name} record. This makes your domain vulnerable to email spoofing.`,
+          action: `Set up a ${name} record to improve your email security.`
+        };
       case 'invalid':
-        return `Your ${name} record is invalid. Please review and correct your ${name} configuration.`;
+        return {
+          title: 'Invalid Configuration',
+          description: `Your ${name} record contains errors.`,
+          action: `Review and correct your ${name} configuration.`
+        };
       default:
-        return '';
+        return null;
     }
   };
 
+  const remediation = getRemediation();
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 shadow">
-      <div className="flex items-center space-x-2 mb-2">
-        {getIcon()}
-        <span className="font-semibold">{name}: {status}</span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          {getIcon()}
+          <span className="font-semibold">{name}</span>
+          {getSeverityBadge()}
+        </div>
+        {record && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            {isExpanded ? 'Hide details' : 'Show details'}
+            <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </button>
+        )}
       </div>
-      {record && (
-        <div className="mt-2">
-          <h4 className="font-semibold">Current Record:</h4>
-          <pre className="bg-gray-100 p-2 rounded mt-1 overflow-x-auto">{record}</pre>
+
+      {isExpanded && record && (
+        <div className="mt-3 space-y-2">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h4 className="font-semibold text-sm">Current Record:</h4>
+              <button
+                onClick={copyRecord}
+                className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+              >
+                {copied ? (
+                  <>
+                    <CheckCircle className="w-3 h-3" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+            <pre className="bg-white p-3 rounded border border-gray-200 text-xs overflow-x-auto">{record}</pre>
+          </div>
         </div>
       )}
-      {(status === 'not found' || status === 'invalid') && (
-        <div className="mt-2 text-red-600">
-          <h4 className="font-semibold">Remediation:</h4>
-          <p>{getRemediation()}</p>
+
+      {remediation && (
+        <div className="mt-3 bg-white rounded border border-red-200 p-3">
+          <h4 className="font-semibold text-sm text-red-800 mb-1">{remediation.title}</h4>
+          <p className="text-sm text-gray-700 mb-2">{remediation.description}</p>
+          <p className="text-sm text-gray-700"><strong>Action needed:</strong> {remediation.action}</p>
         </div>
       )}
     </div>

@@ -1,23 +1,21 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import Footer from './components/Footer'
 
 export const metadata = {
-  title: 'Free DMARC Checker Tool - Test Your Email Security in 30 Seconds',
-  description: 'Is your domain vulnerable to email spoofing? Check your DMARC, SPF & DKIM records instantly. Free professional-grade tool to improve email security.',
-  keywords: 'DMARC checker free, email security test, SPF DKIM checker, email authentication, domain security, DMARC validator',
+  title: 'DMARC Checker - Instant Results, No Signup Required | Free Tool',
+  description: 'Check your DMARC, SPF & DKIM records in 30 seconds. Free, instant, and completely private - all checks run in your browser.',
+  keywords: 'DMARC checker free, instant DMARC test, SPF DKIM checker, email authentication, domain security, DMARC validator, no signup tool',
   openGraph: {
-    title: 'Free DMARC Checker - Test Email Security in 30 Seconds',
-    description: 'Don’t let hackers spoof your emails! Check your DMARC, SPF & DKIM records instantly with our free professional-grade tool.',
+    title: 'Free DMARC Checker - Instant Results, No Signup | Privacy-First',
+    description: 'Check your email security in 30 seconds. Free tool, instant results, no signup required. Your domain data stays private.',
     type: 'website',
     url: 'https://dmarc.makr.io',
-    siteName: 'MAKR.io Tools',
+    siteName: 'DMARC Checker by MAKR.io',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free DMARC Checker - Test Email Security in 30 Seconds',
-    description: 'Don’t let hackers spoof your emails! Check your DMARC, SPF & DKIM records instantly. Free professional-grade tool, instant results.',
+    title: 'DMARC Checker - Instant, Free, Private',
+    description: 'Check DMARC, SPF & DKIM records in 30 seconds. No signup required. Your data never leaves your browser.',
   },
   icons: [
     {
@@ -47,10 +45,6 @@ export default function RootLayout({
               url: "https://dmarc.makr.io",
               applicationCategory: "SecurityApplication",
               browserRequirements: "Any modern web browser",
-              audience: {
-                "@type": "Audience",
-                audienceType: "Business owners, IT administrators, email marketers"
-              },
               offers: {
                 "@type": "Offer",
                 price: "0",
@@ -62,18 +56,25 @@ export default function RootLayout({
                 url: "https://makr.io"
               },
               featureList: [
-                "DMARC record checker",
+                "Instant DMARC record checking",
                 "SPF record validation",
                 "DKIM record verification",
-                "Email security analysis",
-                "Instant results",
-                "Free to use"
+                "Client-side DNS lookups",
+                "No signup required",
+                "Privacy-first design"
               ]
             })
           }}
         />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className="font-sans">
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </div>
+      </body>
     </html>
   )
 }

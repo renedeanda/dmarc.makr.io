@@ -21,9 +21,8 @@ export default function EmailSecurityPage() {
 
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 pb-12">
-
-      {/* Why it Matters */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-8 mb-12">
+          {/* Why it Matters */}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-8 mb-12">
         <div className="flex items-start gap-4">
           <AlertTriangle className="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
           <div>
@@ -37,8 +36,8 @@ export default function EmailSecurityPage() {
         </div>
       </div>
 
-      {/* Section 1: Authentication Protocols */}
-      <section className="mb-16">
+          {/* Section 1: Authentication Protocols */}
+          <section className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <Shield className="w-8 h-8 text-amber-600" />
           <h2 className="text-3xl font-bold text-gray-900">
@@ -182,8 +181,8 @@ export default function EmailSecurityPage() {
         </div>
       </section>
 
-      {/* Section 2: Additional Security */}
-      <section className="mb-16">
+          {/* Section 2: Additional Security */}
+          <section className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <Lock className="w-8 h-8 text-amber-600" />
           <h2 className="text-3xl font-bold text-gray-900">
@@ -269,8 +268,8 @@ export default function EmailSecurityPage() {
         </div>
       </section>
 
-      {/* Section 3: Monitoring */}
-      <section className="mb-16">
+          {/* Section 3: Monitoring */}
+          <section className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <AlertTriangle className="w-8 h-8 text-amber-600" />
           <h2 className="text-3xl font-bold text-gray-900">
@@ -331,8 +330,8 @@ export default function EmailSecurityPage() {
         </div>
       </section>
 
-      {/* Section 4: User Education */}
-      <section className="mb-16">
+          {/* Section 4: User Education */}
+          <section className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <Mail className="w-8 h-8 text-amber-600" />
           <h2 className="text-3xl font-bold text-gray-900">
@@ -392,8 +391,8 @@ export default function EmailSecurityPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-8 md:p-12 text-white mb-12">
+          {/* CTA */}
+          <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-8 md:p-12 text-white mb-12">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Check Your Email Security Now
@@ -418,8 +417,8 @@ export default function EmailSecurityPage() {
         </div>
       </div>
 
-      {/* Related Resources */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8">
+          {/* Related Resources */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Related Resources</h3>
         <div className="grid md:grid-cols-2 gap-4">
           <Link
@@ -451,7 +450,7 @@ export default function EmailSecurityPage() {
             Free DMARC Checker
           </Link>
         </div>
-      </div>
+          </div>
         </div>
       </div>
     </>

@@ -1,4 +1,5 @@
 import './globals.css'
+import Footer from './components/Footer'
 
 export const metadata = {
   title: 'DMARC Checker - Instant Results, No Signup Required | Free Tool',
@@ -66,7 +67,14 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </div>
+      </body>
     </html>
   )
 }

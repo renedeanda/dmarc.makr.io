@@ -120,16 +120,19 @@ export default function GuidesPage() {
 
       {/* Quick Links */}
       <div className="mt-16 bg-gray-100 rounded-lg p-8">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Links</h3>
-        <div className="grid md:grid-cols-3 gap-4">
-          <Link href="/tools/generator" className="text-amber-600 hover:text-amber-700 font-medium">
-            DMARC Record Generator →
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Helpful Tools</h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link href="/tools/generator" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+            DMARC Generator →
           </Link>
-          <Link href="/tools/bulk-checker" className="text-amber-600 hover:text-amber-700 font-medium">
-            Bulk Domain Checker →
+          <Link href="/tools/bulk-checker" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+            Bulk Checker →
           </Link>
-          <Link href="/issues" className="text-amber-600 hover:text-amber-700 font-medium">
-            Common Issues →
+          <Link href="/tools/analyzer" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+            Policy Analyzer →
+          </Link>
+          <Link href="/issues" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+            Troubleshooting →
           </Link>
         </div>
       </div>

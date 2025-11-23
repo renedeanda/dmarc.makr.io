@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle, Lock, ChevronDown, Copy } from 'lucide-react';
 import DmarcTagExplanation from './DmarcTagExplanation';
 import FaqSection from './components/FaqSection';
-import Footer from './components/Footer';
 import CheckHistory from './components/CheckHistory';
 import ShareResults from './components/ShareResults';
 import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
@@ -22,6 +21,23 @@ export default function Home() {
   // Initialize Google Analytics and History
   useGoogleAnalytics();
   const { addToHistory } = useCheckHistory();
+
+  // Check for domain in URL parameters and auto-check
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const domainParam = urlParams.get('domain');
+
+    if (domainParam && !results && !loading) {
+      setDomain(domainParam);
+      // Trigger check after a brief delay
+      setTimeout(() => {
+        const form = document.querySelector('form');
+        if (form) {
+          form.requestSubmit();
+        }
+      }, 500);
+    }
+  }, []);
 
   const calculateSecurityScore = (results: any) => {
     let score = 0;
@@ -207,7 +223,6 @@ export default function Home() {
         </div>
         <DmarcTagExplanation />
         <FaqSection />
-        <Footer />
       </main>
     </>
   );

@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/guide/email-security',
     '/tools/generator',
     '/tools/bulk-checker',
+    '/tools/analyzer',
     '/compare/email-authentication',
     '/issues',
     '/privacy',

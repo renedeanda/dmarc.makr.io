@@ -203,29 +203,26 @@ ${results.dkimResults?.map((d: any) => `   - ${d.selector}: ${d.status}`).join('
 
     // Generate final report
     const report = `
-╔════════════════════════════════════════════════════════════════════╗
-║                    DMARC SECURITY REPORT                           ║
-╚════════════════════════════════════════════════════════════════════╝
+DMARC SECURITY REPORT
+${'='.repeat(70)}
 
 Domain: ${domain}
 Generated: ${new Date().toLocaleString()}
 Security Score: ${score}/100 (${securityLevel})
 
-═══════════════════════════════════════════════════════════════════════
- EXECUTIVE SUMMARY
-═══════════════════════════════════════════════════════════════════════
+EXECUTIVE SUMMARY
+${'='.repeat(70)}
 
 ${issues.join('\n')}
 
 Security Level: ${securityLevel.toUpperCase()}
-${score < 30 ? '⚠️  CRITICAL: Your domain is highly vulnerable to email spoofing and phishing.' :
-  score < 50 ? '⚠️  WARNING: Your email security needs immediate attention.' :
-  score < 80 ? '✓ MODERATE: Basic protections in place, but improvements recommended.' :
-  '✓ STRONG: Your email authentication is well-configured!'}
+${score < 30 ? 'CRITICAL: Your domain is highly vulnerable to email spoofing and phishing.' :
+  score < 50 ? 'WARNING: Your email security needs immediate attention.' :
+  score < 80 ? 'MODERATE: Basic protections in place, but improvements recommended.' :
+  'STRONG: Your email authentication is well-configured!'}
 
-═══════════════════════════════════════════════════════════════════════
- DETAILED FINDINGS
-═══════════════════════════════════════════════════════════════════════
+DETAILED FINDINGS
+${'='.repeat(70)}
 
 DMARC (Domain-based Message Authentication)
 Status: ${results.dmarc}
@@ -239,25 +236,22 @@ DKIM (DomainKeys Identified Mail)
 ${dkimSummary}
 
 ${priorityActions.length > 0 ? `
-═══════════════════════════════════════════════════════════════════════
- PRIORITY ACTIONS
-═══════════════════════════════════════════════════════════════════════
+PRIORITY ACTIONS
+${'='.repeat(70)}
 
 ${priorityActions.map((action, idx) => `${idx + 1}. ${action}`).join('\n')}
 ` : ''}
 
 ${recommendations.length > 0 ? `
-═══════════════════════════════════════════════════════════════════════
- DETAILED RECOMMENDATIONS
-═══════════════════════════════════════════════════════════════════════
+DETAILED RECOMMENDATIONS
+${'='.repeat(70)}
 
 ${recommendations.join('\n\n')}
 ` : `
-═══════════════════════════════════════════════════════════════════════
- RECOMMENDATIONS
-═══════════════════════════════════════════════════════════════════════
+RECOMMENDATIONS
+${'='.repeat(70)}
 
-✅ Excellent! Your email authentication is properly configured.
+Excellent! Your email authentication is properly configured.
 
 Best practices to maintain security:
 - Monitor DMARC reports regularly for suspicious activity
@@ -267,9 +261,8 @@ Best practices to maintain security:
 - Document your email authentication setup for your team
 `}
 
-═══════════════════════════════════════════════════════════════════════
- NEXT STEPS
-═══════════════════════════════════════════════════════════════════════
+NEXT STEPS
+${'='.repeat(70)}
 
 1. Address priority actions listed above
 2. Review detailed recommendations
@@ -283,10 +276,10 @@ Need Help?
 - Troubleshooting: https://dmarc.makr.io/issues
 - Compare Protocols: https://dmarc.makr.io/compare/email-authentication
 
-═══════════════════════════════════════════════════════════════════════
+${'='.repeat(70)}
 Report generated using DMARC Checker by MAKR.io
-Check any domain instantly: https://dmarc.makr.io
-═══════════════════════════════════════════════════════════════════════
+Check any domain instantly: https://dmarc.makr.io?domain=${domain}
+${'='.repeat(70)}
     `.trim();
 
     return report;
@@ -578,10 +571,29 @@ Check any domain instantly: https://dmarc.makr.io
   };
 
   const shareResults = async () => {
+    const dkimStatus = results.dkimResults?.some((d: any) => d.status === 'valid') ? 'valid' :
+                       results.dkimResults?.length > 0 ? 'invalid' : 'not found';
+
+    let securityLevel = 'Critical';
+    if (score >= 80) securityLevel = 'Strong';
+    else if (score >= 50) securityLevel = 'Moderate';
+    else if (score >= 30) securityLevel = 'Weak';
+
     const shareData = {
-      title: `DMARC Check Results for ${domain}`,
-      text: `Security Score: ${score}/100\n\nDMARC: ${results.dmarc}\nSPF: ${results.spf}\nDKIM: ${results.dkimResults?.some((d: any) => d.status === 'valid') ? 'valid' : 'not found'}`,
-      url: `https://dmarc.makr.io`
+      title: `DMARC Security Report for ${domain}`,
+      text: `${domain} Email Security Report
+
+Security Score: ${score}/100 (${securityLevel})
+
+Results:
+• DMARC: ${results.dmarc}
+• SPF: ${results.spf}
+• DKIM: ${dkimStatus}
+
+${score < 80 ? 'Action needed to improve email security.' : 'Email authentication is well-configured!'}
+
+Check your domain at:`,
+      url: `https://dmarc.makr.io?domain=${domain}`
     };
 
     try {

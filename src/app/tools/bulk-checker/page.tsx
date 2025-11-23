@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Upload, Download, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, Download, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 interface DomainResult {
   domain: string;
@@ -132,23 +133,17 @@ export default function BulkCheckerPage() {
   const totalCount = results.length;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <Link
-          href="/guide"
-          className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Guides
-        </Link>
+    <div className="min-h-screen bg-gray-50">
+      <PageHeader
+        title="Bulk Domain Checker"
+        description="Check DMARC, SPF, and DKIM records for multiple domains at once."
+        breadcrumbs={[
+          { label: 'Tools', href: '/guide' },
+          { label: 'Bulk Checker' }
+        ]}
+      />
 
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Bulk Domain Checker
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Check DMARC, SPF, and DKIM records for multiple domains at once.
-        </p>
+      <div className="max-w-6xl mx-auto px-4 py-12">
 
         {/* Input Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">

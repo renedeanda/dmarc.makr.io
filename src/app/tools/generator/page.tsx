@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Copy, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Copy, CheckCircle } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export default function DMARCGeneratorPage() {
   const [policy, setPolicy] = useState('none');
@@ -52,23 +53,17 @@ export default function DMARCGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <Link
-          href="/guide"
-          className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Guides
-        </Link>
+    <div className="min-h-screen bg-gray-50">
+      <PageHeader
+        title="DMARC Record Generator"
+        description="Create a properly formatted DMARC DNS record with our easy-to-use generator."
+        breadcrumbs={[
+          { label: 'Tools', href: '/guide' },
+          { label: 'DMARC Generator' }
+        ]}
+      />
 
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          DMARC Record Generator
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Create a properly formatted DMARC DNS record with our easy-to-use generator.
-        </p>
+      <div className="max-w-4xl mx-auto px-4 py-12">
 
         {/* Info Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">

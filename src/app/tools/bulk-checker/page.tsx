@@ -138,7 +138,7 @@ export default function BulkCheckerPage() {
         title="Bulk Domain Checker"
         description="Check DMARC, SPF, and DKIM records for multiple domains at once."
         breadcrumbs={[
-          { label: 'Tools', href: '/guide' },
+          { label: 'Tools', href: '/tools' },
           { label: 'Bulk Checker' }
         ]}
       />

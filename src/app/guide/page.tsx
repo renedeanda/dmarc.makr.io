@@ -67,9 +67,10 @@ export default function GuidesPage() {
         ]}
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        {/* Guide Categories */}
-        <div className="space-y-12">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          {/* Guide Categories */}
+          <div className="space-y-12">
         {guides.map((category) => {
           const Icon = category.icon;
           return (
@@ -136,6 +137,7 @@ export default function GuidesPage() {
           </Link>
         </div>
       </div>
+        </div>
       </div>
     </>
   );

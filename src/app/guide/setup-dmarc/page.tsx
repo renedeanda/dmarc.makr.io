@@ -19,8 +19,9 @@ export default function SetupDmarcGuide() {
         ]}
       />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <article className="prose prose-lg max-w-none">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <article className="prose prose-lg max-w-none">
           {/* Meta info */}
           <div className="not-prose flex items-center gap-4 text-sm text-gray-600 mb-8">
             <span className="flex items-center gap-1">
@@ -263,9 +264,10 @@ export default function SetupDmarcGuide() {
             <h4 className="font-semibold text-gray-900 mb-2">Common Issues</h4>
             <p className="text-sm text-gray-600">Troubleshoot DMARC problems</p>
           </Link>
+          </div>
         </div>
-      </div>
-        </article>
+          </article>
+        </div>
       </div>
     </>
   );

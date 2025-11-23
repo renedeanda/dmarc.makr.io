@@ -215,17 +215,18 @@ export default function DMARCAnalyzerPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <PageHeader
         title="DMARC Policy Analyzer"
         description="Paste any DMARC record to get a detailed breakdown of what each tag means and how it affects your email security."
         breadcrumbs={[
-          { label: 'Tools', href: '/guide' },
+          { label: 'Tools', href: '/tools' },
           { label: 'Policy Analyzer' }
         ]}
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 py-12">
         {/* Input Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Enter DMARC Record</h2>
@@ -377,7 +378,8 @@ export default function DMARCAnalyzerPage() {
             Check Your Domain
           </Link>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

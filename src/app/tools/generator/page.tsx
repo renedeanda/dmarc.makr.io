@@ -58,7 +58,7 @@ export default function DMARCGeneratorPage() {
         title="DMARC Record Generator"
         description="Create a properly formatted DMARC DNS record with our easy-to-use generator."
         breadcrumbs={[
-          { label: 'Tools', href: '/guide' },
+          { label: 'Tools', href: '/tools' },
           { label: 'DMARC Generator' }
         ]}
       />

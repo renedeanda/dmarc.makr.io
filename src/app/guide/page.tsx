@@ -20,6 +20,27 @@ const guides = [
         difficulty: 'Beginner'
       },
       {
+        title: 'SPF Setup Guide',
+        description: 'Learn how to set up SPF records to authorize email servers for your domain.',
+        href: '/guide/setup-spf',
+        readTime: '12 min',
+        difficulty: 'Beginner'
+      },
+      {
+        title: 'DKIM Setup Guide',
+        description: 'Configure DKIM to digitally sign your emails and prevent tampering.',
+        href: '/guide/setup-dkim',
+        readTime: '15 min',
+        difficulty: 'Intermediate'
+      },
+      {
+        title: 'DMARC Policy Progression',
+        description: 'Safely move from p=none to p=reject for maximum email security.',
+        href: '/guide/policy-progression',
+        readTime: '18 min',
+        difficulty: 'Intermediate'
+      },
+      {
         title: 'DMARC for Google Workspace',
         description: 'Platform-specific guide for setting up DMARC, SPF, and DKIM with Google Workspace.',
         href: '/guide/google-workspace',
@@ -147,14 +168,14 @@ export default function GuidesPage() {
               <Link href="/tools/generator" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
                 DMARC Generator →
               </Link>
+              <Link href="/tools/spf-generator" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+                SPF Generator →
+              </Link>
               <Link href="/tools/bulk-checker" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
                 Bulk Checker →
               </Link>
               <Link href="/tools/analyzer" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
                 Policy Analyzer →
-              </Link>
-              <Link href="/issues" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
-                Troubleshooting →
               </Link>
             </div>
           </div>

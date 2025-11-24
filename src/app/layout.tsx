@@ -3,11 +3,11 @@ import Footer from './components/Footer'
 
 export const metadata = {
   title: 'DMARC Checker - Instant Results, No Signup Required | Free Tool',
-  description: 'Check your DMARC, SPF & DKIM records in 30 seconds. Free, instant, and completely private - all checks run in your browser.',
-  keywords: 'DMARC checker free, instant DMARC test, SPF DKIM checker, email authentication, domain security, DMARC validator, no signup tool',
+  description: 'Check your DMARC, SPF & DKIM records in 30 seconds. Free tools including bulk domain checker, policy analyzer, record generators, and setup guides. Instant, private, no signup required.',
+  keywords: 'DMARC checker free, instant DMARC test, SPF DKIM checker, email authentication, domain security, DMARC validator, no signup tool, bulk domain checker, DMARC generator, SPF generator, policy analyzer, DMARC setup guide',
   openGraph: {
     title: 'Free DMARC Checker - Instant Results, No Signup | Privacy-First',
-    description: 'Check your email security in 30 seconds. Free tool, instant results, no signup required. Your domain data stays private.',
+    description: 'Check your email security in 30 seconds. Free tools including bulk checker, policy analyzer, generators, and comprehensive setup guides. Your domain data stays private.',
     type: 'website',
     url: 'https://dmarc.makr.io',
     siteName: 'DMARC Checker by MAKR.io',
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'DMARC Checker - Instant, Free, Private',
-    description: 'Check DMARC, SPF & DKIM records in 30 seconds. No signup required. Your data never leaves your browser.',
+    description: 'Check DMARC, SPF & DKIM records in 30 seconds. Includes bulk checker, policy analyzer, generators & guides. No signup required.',
   },
   icons: [
     {
@@ -59,6 +59,11 @@ export default function RootLayout({
                 "Instant DMARC record checking",
                 "SPF record validation",
                 "DKIM record verification",
+                "Bulk domain checker (up to 50 domains)",
+                "DMARC policy analyzer",
+                "DMARC record generator",
+                "SPF record generator",
+                "Comprehensive setup guides",
                 "Client-side DNS lookups",
                 "No signup required",
                 "Privacy-first design"

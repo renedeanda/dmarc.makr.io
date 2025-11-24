@@ -196,37 +196,39 @@ export default function SetupDmarcGuide() {
       </div>
 
       <h2 className="text-3xl font-bold text-gray-900 mt-8 mb-4">Common DMARC Tags</h2>
-      <table className="not-prose w-full border-collapse border border-gray-200 my-8">
-        <thead>
-          <tr className="bg-gray-50">
-            <th className="border border-gray-200 p-3 text-left font-semibold">Tag</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Purpose</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Example</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>v</code></td>
-            <td className="border border-gray-200 p-3">Protocol version</td>
-            <td className="border border-gray-200 p-3"><code>v=DMARC1</code></td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>p</code></td>
-            <td className="border border-gray-200 p-3">Policy for domain</td>
-            <td className="border border-gray-200 p-3"><code>p=reject</code></td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>rua</code></td>
-            <td className="border border-gray-200 p-3">Aggregate reports email</td>
-            <td className="border border-gray-200 p-3"><code>rua=mailto:reports@domain.com</code></td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>pct</code></td>
-            <td className="border border-gray-200 p-3">Percentage of emails to filter</td>
-            <td className="border border-gray-200 p-3"><code>pct=25</code></td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="not-prose overflow-x-auto my-8">
+        <table className="w-full border-collapse border border-gray-200 min-w-[600px]">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="border border-gray-200 p-3 text-left font-semibold">Tag</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Purpose</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>v</code></td>
+              <td className="border border-gray-200 p-3">Protocol version</td>
+              <td className="border border-gray-200 p-3"><code>v=DMARC1</code></td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>p</code></td>
+              <td className="border border-gray-200 p-3">Policy for domain</td>
+              <td className="border border-gray-200 p-3"><code>p=reject</code></td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>rua</code></td>
+              <td className="border border-gray-200 p-3">Aggregate reports email</td>
+              <td className="border border-gray-200 p-3"><code className="whitespace-nowrap">rua=mailto:reports@domain.com</code></td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>pct</code></td>
+              <td className="border border-gray-200 p-3">Percentage of emails to filter</td>
+              <td className="border border-gray-200 p-3"><code>pct=25</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2 className="text-3xl font-bold text-gray-900 mt-8 mb-4">Troubleshooting</h2>
 

@@ -142,14 +142,15 @@ export default function SetupSpfGuide() {
       </div>
 
       <h3 className="text-2xl font-semibold text-gray-900 mt-6 mb-3">Common SPF Mechanisms</h3>
-      <table className="not-prose w-full border-collapse border border-gray-200 my-8">
-        <thead>
-          <tr className="bg-gray-50">
-            <th className="border border-gray-200 p-3 text-left font-semibold">Mechanism</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Purpose</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Example</th>
-          </tr>
-        </thead>
+      <div className="not-prose overflow-x-auto my-8">
+        <table className="w-full border-collapse border border-gray-200 min-w-[600px]">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="border border-gray-200 p-3 text-left font-semibold">Mechanism</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Purpose</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Example</th>
+            </tr>
+          </thead>
         <tbody>
           <tr>
             <td className="border border-gray-200 p-3"><code>include:</code></td>
@@ -177,10 +178,12 @@ export default function SetupSpfGuide() {
             <td className="border border-gray-200 p-3"><code>mx</code></td>
           </tr>
         </tbody>
-      </table>
+        </table>
+      </div>
 
       <h3 className="text-2xl font-semibold text-gray-900 mt-6 mb-3">SPF Qualifiers</h3>
-      <table className="not-prose w-full border-collapse border border-gray-200 my-8">
+      <div className="not-prose overflow-x-auto my-8">
+        <table className="w-full border-collapse border border-gray-200 min-w-[500px]">
         <thead>
           <tr className="bg-gray-50">
             <th className="border border-gray-200 p-3 text-left font-semibold">Qualifier</th>
@@ -210,7 +213,8 @@ export default function SetupSpfGuide() {
             <td className="border border-gray-200 p-3">Rarely used</td>
           </tr>
         </tbody>
-      </table>
+        </table>
+      </div>
 
       <h3 className="text-2xl font-semibold text-gray-900 mt-6 mb-3">Example SPF Records</h3>
 

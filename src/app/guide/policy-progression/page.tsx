@@ -231,37 +231,39 @@ export default function PolicyProgressionGuide() {
         The <code>pct</code> tag allows you to apply your DMARC policy to only a percentage of failing emails, providing an additional safety net during transitions:
       </p>
 
-      <table className="not-prose w-full border-collapse border border-gray-200 my-8">
-        <thead>
-          <tr className="bg-gray-50">
-            <th className="border border-gray-200 p-3 text-left font-semibold">pct Value</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Percentage</th>
-            <th className="border border-gray-200 p-3 text-left font-semibold">Recommended Duration</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>pct=25</code></td>
-            <td className="border border-gray-200 p-3">25% of failing emails</td>
-            <td className="border border-gray-200 p-3">1 week</td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>pct=50</code></td>
-            <td className="border border-gray-200 p-3">50% of failing emails</td>
-            <td className="border border-gray-200 p-3">1 week</td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>pct=75</code></td>
-            <td className="border border-gray-200 p-3">75% of failing emails</td>
-            <td className="border border-gray-200 p-3">1 week</td>
-          </tr>
-          <tr>
-            <td className="border border-gray-200 p-3"><code>pct=100</code></td>
-            <td className="border border-gray-200 p-3">100% of failing emails (default)</td>
-            <td className="border border-gray-200 p-3">Permanent</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="not-prose overflow-x-auto my-8">
+        <table className="w-full border-collapse border border-gray-200 min-w-[550px]">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="border border-gray-200 p-3 text-left font-semibold">pct Value</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Percentage</th>
+              <th className="border border-gray-200 p-3 text-left font-semibold">Recommended Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>pct=25</code></td>
+              <td className="border border-gray-200 p-3">25% of failing emails</td>
+              <td className="border border-gray-200 p-3">1 week</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>pct=50</code></td>
+              <td className="border border-gray-200 p-3">50% of failing emails</td>
+              <td className="border border-gray-200 p-3">1 week</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>pct=75</code></td>
+              <td className="border border-gray-200 p-3">75% of failing emails</td>
+              <td className="border border-gray-200 p-3">1 week</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 p-3"><code>pct=100</code></td>
+              <td className="border border-gray-200 p-3">100% of failing emails (default)</td>
+              <td className="border border-gray-200 p-3">Permanent</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div className="not-prose bg-blue-50 border border-blue-200 rounded-lg p-6 my-8">
         <div className="flex gap-3">
